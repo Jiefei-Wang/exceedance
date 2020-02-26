@@ -1,0 +1,26 @@
+Package: exceedance
+Type: Package
+Title: Multiple hypothesis testing while controlling the exceedance probability
+    of the false discovery proportion
+Version: 1.0
+Date: 2020-02-24
+Author: Jiefei Wang
+Maintainer: Jiefei Wang <jwang96@buffalo.edu>
+Description: More about what it does (maybe more than one line)
+License: GPL-3
+SystemRequirements: C++11
+RoxygenNote: 7.0.2
+Roxygen: list(markdown = TRUE)
+Encoding: UTF-8
+LinkingTo: 
+    Rcpp
+Imports: 
+    Rcpp,
+    methods,
+    stats,
+    bit
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
