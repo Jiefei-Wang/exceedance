@@ -49,7 +49,6 @@ bound_general_general <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL
     
     ## Compute the unrejected set
     U_index <- pvalues$i[pvalues$p>alpha]
-    U_prime_id <- S_key[U_index]
     
     ## If there is no unrejected set
     ## FRP = 0
@@ -61,7 +60,7 @@ bound_general_general <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL
     
     cur_key <- get_set_key(sorted_i,m)
     
-    FP <- get_overlapped_num(cur_key,U_prime_id)
+    FP <- get_overlapped_num(S_key,U_index,cur_key)
     
     tau_hat <- max(FP)/length(sorted_i)
     tau_hat

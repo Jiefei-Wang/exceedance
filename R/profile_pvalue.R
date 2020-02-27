@@ -26,7 +26,6 @@ profile_general_general<-function(x,params,...){
     
     current_S <- list()
     current_pvalue <- c()
-    current_S_key <- list()
     # Run each subset of size at least 2 through the above function
     for(size in rev(seq_len(m-1))){
         allsubsets = enum.choose(1:m, size)
@@ -41,8 +40,7 @@ profile_general_general<-function(x,params,...){
             index_higherP <- find_higherP_index(cur_pvalue,pvalues)
             current_set_id <- get_set_key(cur_index,m)
             if(length(index_higherP)!=0){
-                super_set_id<-S_key[index_higherP]
-                if(any(is_subset(current_set_id,super_set_id))){
+                if(any(is_subset(S_key,index_higherP,current_set_id))){
                     next
                 }
             }
@@ -54,7 +52,7 @@ profile_general_general<-function(x,params,...){
             }else{
                 current_pvalue <- data.frame(i=abosolute_offset,p=cur_pvalue)
             }
-            current_S_key[[relative_offset]] <- current_set_id
+            S_key[[abosolute_offset]]=current_set_id
         }
         ## record the current subset
         if(length(current_pvalue)!=0){
@@ -62,11 +60,9 @@ profile_general_general<-function(x,params,...){
             pvalues <- pvalues[order(pvalues$p),]
         }
         S <- c(S,current_S)
-        S_key <- c(S_key,current_S_key)
         ## clear the current subset list for the next iteration
         current_S <- list()
         current_pvalue <- c()
-        current_S_key <- list()
     }
     
     x_rank <- rank(x)

@@ -12,36 +12,19 @@ all.null<-function(...){
 }
 
 
-
 get_set_key <- function(index,totalElt){
-    x <- bit::bit(totalElt)
-    x[index] <- TRUE
-    x
+    key <- get_bit_obj(totalElt)
+    set_bit_obj(key,index-1L)
+    key
 }
 
-get_overlapped_num <- function(key1, key2){
-    if(!is.list(key1)&!is.list(key2)){
-        return(sum(key1&key2))
-    }
-    
-    if(is.list(key1)){
-        vapply(key1,function(key1)get_overlapped_num(key1,key2),numeric(1))
-    }else{
-        if(is.list(key2)){
-            vapply(key2,function(key2)get_overlapped_num(key1,key2),numeric(1))
-        }
-    }
-}
-get_elt_count <- function(key){
-    if(!is.list(key)){
-        sum(key)
-    }else{
-        vapply(key,sum,numeric(1))
-    }
+## key_list must be a vector of keys
+get_overlapped_num <- function(key_list,list_index,key){
+    get_list_inter_number(key_list,list_index-1L,key)
 }
 ## is the set1 a subset of the set2(s)?
-is_subset<-function(key1, key2){
-    get_overlapped_num(key1,key2)==get_elt_count(key1)
+is_subset<-function(key_list,list_index,key){
+    get_overlapped_num(key_list,list_index,key)==get_bit_count(key)
 }
 
 
