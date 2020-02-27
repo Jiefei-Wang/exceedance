@@ -66,20 +66,27 @@ profile_general_general<-function(x,params,...){
     }
     
     x_rank <- rank(x)
-    profile <- .exceedance_profile(
-        list(S=S,x=x,sx=sx,x_rank=x_rank,m=m,
+    profile <- list(S=S,x=x,sx=sx,x_rank=x_rank,m=m,
                     pvalues=pvalues,
-             S_key=S_key)
+                    S_key=S_key)
+    .exceedance_profile(
+        list(params = params, profile =profile)
         )
-    list(params = params, profile =profile)
 }
 
 
-
-
-
-
-
+profile_general_JW<-function(x,params,...){
+    cache <- list()
+    cache$search_path <- new.env()
+    cache$pvalues <- new.env()
+    m <-length(x)
+    sx <- sort(x)
+    x_rank <- rank(x)
+    profile <- list(x=x,sx=sx,x_rank=x_rank,m=m,cache=cache)
+    .exceedance_profile(
+        list(params = params, profile =profile)
+    )
+}
 
 
 
@@ -91,11 +98,12 @@ profile_GW_k_order <- function(x, params){
     max_alpha <- max(local_level[k:m])
     
     x_rank <- rank(x)
-    profile <- .exceedance_profile(
+    profile <- 
         list(local_level=local_level,x=x,sx=sx,x_rank=x_rank,m=m,
-                    max_alpha=max_alpha)
+             max_alpha=max_alpha)
+    .exceedance_profile(
+        list(params = params, profile =profile)
         )
-    list(params = params, profile =profile)
 }
 
 

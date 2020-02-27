@@ -28,30 +28,6 @@ GW_k_order_tau_hat<-function(i,J,k,m){
     }
 }
 
-#res1[j]=GW_k_order_tau_hat1(j,k,m,sx)
-GW_k_order_tau_hat1<-function(i,k,m,sx){
-    cut <- qbeta(alpha,k,seq_len(m-k+1))
-    result <- c()
-    for(l in seq_along(cut)){
-        cur_cut <- cut[l]
-        n <- k+l-1
-        index <- k:(m-n+k)
-        j_list <- which(sx[index]>cur_cut)
-        if(length(j_list)==0){
-            j=m+1
-        }else{
-            j <- min(j_list)+k-1
-        }
-        if(i<j){
-            result=c(result,min(i,k-1)/i)
-        }else{
-            result=c(result,(k+min(i-j,n-k))/i)
-        }
-        
-    }
-    max(result)
-}
-
 
 find_lowerP_index <-function(cur_p, pvalues){
     p<-pvalues$p
@@ -122,4 +98,12 @@ find_higherP_index <-function(cur_p, pvalues){
     pvalues$i[upper_i:nrow(pvalues)]
 }
 
-
+enum.choose <- function(x, k) {
+    if(k > length(x)) stop('k > length(x)')
+    if(choose(length(x), k)==1){
+        list(as.vector(combn(x, k)))
+    } else {
+        cbn <- combn(x, k)
+        lapply(seq(ncol(cbn)), function(i) cbn[,i])
+    }
+}
