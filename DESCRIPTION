@@ -18,7 +18,8 @@ Imports:
     Rcpp,
     methods,
     stats,
-    digest
+    digest,
+    generalKSStat
 Suggests: 
     testthat,
     knitr,

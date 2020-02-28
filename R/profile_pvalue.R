@@ -1,7 +1,7 @@
 profile_pvalue<-function(x, params){
     method <- params$method
-    algorithm <- params$algorithm
-    result <- call_func(root = "profile", postfix= c(method,algorithm),
+    postfix <- params$postfix
+    result <- call_func(root = "profile", postfix= c(method,postfix),
                         x=x,params = params)
     result
 }
@@ -106,5 +106,51 @@ profile_GW_k_order <- function(x, params){
         )
 }
 
+profile_GW_order_general<-function(x,params,...){
+    cache <- list()
+    cache$criticals <- new.env()
+    cache$pvalues <- new.env()
+    m <-length(x)
+    sx <- sort(x)
+    x_rank <- rank(x)
+    profile <- list(x=x,sx=sx,x_rank=x_rank,m=m,cache=cache)
+    .exceedance_profile(
+        list(params = params, profile =profile)
+    )
+}
 
 
+bound_GW_order_general <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...){
+    profile <- profiled_data$profile
+    params <- profiled_data$params
+    range_type <- params$range_type
+    param1 <- params$param1
+    param2 <- params$param2
+    statistic <- params$statistic
+    m <- profile$m
+    sx<- profile$sx
+    cache <- profile$cache
+    
+    is_one_sided <- grep("+",statistic,fixed=TRUE)
+    
+    FDR <- 0
+    for(n in seq_len(m)){
+        if(range_type=="proportion"){
+            index1 <- get_index_from_proportion(n=n,param=param1)
+            index2 <- get_index_from_proportion(n=n,param=param2)
+        }else{
+            
+        }
+        
+        
+        
+        
+        
+    }
+    if(is_one_sided){
+        get_local_critical()
+    }
+    
+    
+    
+}

@@ -1,7 +1,7 @@
 exceedance_bound<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL,...){
     method <- profiled_data$params$method
-    algorithm <- profiled_data$params$algorithm
-    result <- call_func(root = "bound", postfix= c(method,algorithm),
+    postfix <- profiled_data$params$postfix
+    result <- call_func(root = "bound", postfix= c(method,postfix),
                         profiled_data = profiled_data, alpha = alpha,
                         ri=ri,sri =sri,rx=rx,...)
     result

@@ -1,9 +1,29 @@
-param_GW<-function(test_func = c("k_order","KS","HC","BJ"), param1=NULL,param2=NULL){
-    test_func <- match.arg(test_func)
+param_GW<-function(statistic = c("k_order",
+                                 "KS","HC","BJ",
+                                 "KS+","HC+","BJ+"), param1=NULL,
+                   param2=NULL,range_type=c("index","proportion")){
+    statistic <- match.arg(statistic)
+    if(statistic%in%c("KS","HC","BJ",
+                      "KS+","HC+","BJ+")){
+        range_type <- match.arg(range_type,c("index","proportion"))
+        if(!is.null(param1)){
+            param1 <- fill_range(range_type,param1)
+        }
+        if(!is.null(param2)){
+            param2 <- fill_range(range_type,param2)
+        }
+        postfix <- "order_general"
+    }else{
+        stopifnot(range_type!="index")
+        postfix<-statistic
+    }
+    
     parms <- list(method = "GW",
-                  algorithm = test_func,
+                  postfix = postfix,
+                  statistic = statistic,
                   param1 = param1,
-                  param2 = param2)
+                  param2 = param2,
+                  range_type=range_type)
     .exceedance_parameters(parms)
 }
 
