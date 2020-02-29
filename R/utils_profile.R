@@ -83,20 +83,6 @@ enum.choose <- function(x, k) {
 ######################################################
 ## GW general ordered statistics algorithm
 ######################################################
-get_local_critical <-function(stat, n, alpha, index,indexL,indexU){
-    func_name <- gsub("+","",stat,fixed=TRUE)
-    if(func_name==stat){
-        critical <- GKSCritical(alpha=alpha,n=n,indexL=indexL,indexU=indexU,statName=stat)
-    }else{
-        critical <- GKSCritical(alpha=alpha,n=n,index=index,statName=stat)
-    }
-    level <- do.call(paste0(func_name,"LocalCritical"),args = list(
-        stat= critical,
-        n=n
-    ),
-    envir = getNamespace("generalKSStat"))
-    level
-}
 
 get_index_from_proportion<-function(n,param){
     if(is.null(param)) return(param)
@@ -104,3 +90,92 @@ get_index_from_proportion<-function(n,param){
     param[param==0] <- 1
     seq_len(param[2]-param[1]+1) + param[1] -1
 }
+
+get_local_critical <-function(stat, n, alpha, indexL,indexU){
+    critical <- GKSCritical(alpha=alpha,n=n,indexL=indexL,indexU=indexU,statName=stat)
+    level <- do.call(paste0(stat,"LocalCritical"),args = list(
+        stat= critical,
+        n=n
+    ),
+    envir = getNamespace("generalKSStat"))
+    level
+}
+## modify the local criticals according to the index
+process_local_critical <- function(bound,indexL,indexU){
+    l <- bound$l
+    h <- bound$h
+    n <- length(l)
+    if(length(indexL)!=0){
+        l[-indexL] <- 0
+    }else{
+        l=rep(0,length(l))
+    }
+    if(length(indexU)!=0){
+        h[-indexU] <- 1
+    }else{
+        h=rep(1,length(h))
+    }
+    for(i in seq_len(n-1)){
+        if(l[i]>l[i+1]) l[i+1] <- l[i]
+        j <- n-i
+        if(h[j] > h[j+1]) h[j] <- h[j+1]
+    }
+    bound$h <-h
+    bound$l <- l
+    bound
+}
+## get the range index L_i,H_i
+## such that x[L_i]>=l_i and x[H_i] <= h_i 
+get_range_by_bound<-function(sx,bound){
+    nx <- length(x)
+    l <- bound$l
+    h <- bound$h
+    n <- length(l)
+    L <- rep(0, n)
+    H <- rep(0, n)
+    index_x_l <-1L
+    index_x_h <- nx
+    for(i in seq_len(n)){
+        j<- n-i+1L
+        repeat{
+            if(sx[index_x_l]>=l[i]&&index_x_l>=i){
+                L[i] <- index_x_l
+                break
+            }else{
+                index_x_l <- index_x_l +1L
+                if(index_x_l == nx+1L){
+                    return(NULL)
+                }
+            }
+        }
+        repeat{
+            if(sx[index_x_h] <= h[j]&&nx-index_x_h+1L>=i){
+                H[j] <- index_x_h
+                break
+            }else{
+                index_x_h <- index_x_h -1L
+                if(index_x_h == 0L){
+                    return(NULL)
+                }
+            }
+        }
+    }
+    # 
+    # if(n==6)
+    #     browser()
+    ## shrink the range to make sure the upper bound
+    ## of H is reachable by some sequences of x
+    for(i in rev(seq_len(n-1L))){
+        H[i] <- min(H[i],H[i+1L]-1L)
+    }
+    if(any(L>H)){
+        return(NULL)
+    }
+    list(L=L,H=H)
+}
+
+
+
+
+
+

@@ -1,20 +1,22 @@
 param_GW<-function(statistic = c("k_order",
-                                 "KS","HC","BJ",
-                                 "KS+","HC+","BJ+"), param1=NULL,
+                                 "KS","HC","BJ"), param1=NULL,
                    param2=NULL,range_type=c("index","proportion")){
     statistic <- match.arg(statistic)
-    if(statistic%in%c("KS","HC","BJ",
-                      "KS+","HC+","BJ+")){
-        range_type <- match.arg(range_type,c("index","proportion"))
-        if(!is.null(param1)){
-            param1 <- fill_range(range_type,param1)
+    range_type <- match.arg(range_type,c("index","proportion"))
+    if(statistic%in%c("KS","HC","BJ")){
+        if(range_type == "proportion"){
+            stopifnot(length(param1)<=2)
+            stopifnot(length(param1)<=2)
         }
-        if(!is.null(param2)){
-            param2 <- fill_range(range_type,param2)
+        if(is.null(param1)&&is.null(param2)){
+            param1 <- c(0,1)
+            range_type <- "proportion"
         }
+        param1 <- sort(fill_range(range_type,param1))
+        param2 <- sort(fill_range(range_type,param2))
         postfix <- "order_general"
     }else{
-        stopifnot(range_type!="index")
+        stopifnot(range_type=="index")
         postfix<-statistic
     }
     
@@ -32,7 +34,8 @@ param_general<-function(pvalue_func,algorithm = c("general","JW")){
     algorithm <- match.arg(algorithm)
     parms <- list(method = "general",
                   pvalue_func = pvalue_func,
-                  algorithm = algorithm)
+                  algorithm = algorithm,
+                  postfix = algorithm)
     .exceedance_parameters(parms)
 }
 

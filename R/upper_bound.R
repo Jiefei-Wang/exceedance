@@ -32,8 +32,8 @@ bound_GW_k_order <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...)
     }
     U <- setdiff(seq_len(m),k-1+seq_len(J-k))
     
-    gammabar <- length(intersect(U,sorted_i))/length(sorted_i)
-    gammabar
+    FDR <- length(intersect(U,sorted_i))/length(sorted_i)
+    FDR
 }
 
 
@@ -62,8 +62,8 @@ bound_general_general <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL
     
     FP <- get_overlapped_num(S_key,U_index,cur_key)
     
-    tau_hat <- max(FP)/length(sorted_i)
-    tau_hat
+    FDR <- max(FP)/length(sorted_i)
+    FDR
 }
 
 bound_general_JW <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...){
@@ -83,7 +83,7 @@ bound_general_JW <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...)
     
     total_positive <- length(sorted_i)
     
-    tau_hat <- 0
+    FDR <- 0
     ## pick false positive number
     for(FP in rev(seq_len(total_positive))){
         ## pick the size of the candidate set(exclude the false positive)
@@ -100,7 +100,7 @@ bound_general_JW <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...)
             }
             ## test if the candidate set is rejected at level alpha
             if(pvalue > alpha){
-                tau_hat <- FP/length(sorted_i)
+                FDR <- FP/length(sorted_i)
                 break;
             }
         }
@@ -108,5 +108,5 @@ bound_general_JW <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...)
             break;
         }
     }
-    tau_hat
+    FDR
 }
