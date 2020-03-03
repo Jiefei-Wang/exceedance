@@ -110,3 +110,76 @@ bound_general_JW <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...)
     }
     FDR
 }
+
+
+bound_GW_order_general <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...){
+    profile <- profiled_data$profile
+    params <- profiled_data$params
+    range_type <- params$range_type
+    param1 <- params$param1
+    param2 <- params$param2
+    statistic <- params$statistic
+    m <- profile$m
+    sx<- profile$sx
+    cache <- profile$cache
+    
+    
+    sorted_i <- get_ordered_index(x_rank,ri,sri,rx)
+    rj_num <- length(sorted_i)
+    ## reduce the loop number by checking the current FDR
+    FDR <- 0
+    for(n in rev(seq_len(m))){
+        
+        if(range_type=="proportion"){
+            index1 <- get_index_from_proportion(n=n,param=param1)
+            index2 <- get_index_from_proportion(n=n,param=param2)
+        }else{
+            if(!is.null(param1)&&param1[length(param1)]>n){
+                FDR <- max(FDR, min(n,rj_num) / rj_num)
+                next
+            }
+            if(!is.null(param2)&&param2[length(param2)]>n){
+                FDR <- max(FDR, min(n,rj_num) / rj_num)
+                next
+            }
+            index1 <- param1
+            index2 <- param2
+        }
+        ## generic bound
+        bound <- get_local_critical(stat = statistic, n=n, alpha=alpha,
+                                    indexL=index1,indexU=index2)
+        
+        ## This is the true bound
+        bound <- process_local_critical(bound,indexL=index1,indexU=index2)
+        x_range <- get_range_by_bound(sx=sx,bound=bound)
+        if(is.null(x_range)){
+            next
+        }
+        L <- x_range$L
+        H <- x_range$H
+        FP <- 0L
+        i<- 1L
+        j <- 1L
+        repeat{
+            if(sorted_i[i]>=L[j]&sorted_i[i]<=H[j]){
+                FP <- FP + 1L
+                i <- i+1L
+                j<- j+1L
+            }else{
+                if(sorted_i[i]<L[j]){
+                    i<-i+1L
+                }else{
+                    if(sorted_i[i]>H[j]){
+                        j<-j+1L
+                    }
+                }
+            }
+            if(i>rj_num||
+               j>n){
+                break
+            }
+        }
+        FDR <- max(FDR,FP/rj_num)
+    }
+    FDR
+}
