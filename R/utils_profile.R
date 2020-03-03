@@ -32,7 +32,28 @@ GW_k_order_tau_hat<-function(i,J,k,m){
         return((k-1)/i)
     }
 }
-
+GW__proportion_k_order_tau_hat<-function(i,k,m,sx){
+    cut <- qbeta(alpha,k,seq_len(m-k+1))
+    result <- c()
+    for(l in seq_along(cut)){
+        cur_cut <- cut[l]
+        n <- k+l-1
+        index <- k:(m-n+k)
+        j_list <- which(sx[index]>cur_cut)
+        if(length(j_list)==0){
+            j=m+1
+        }else{
+            j <- min(j_list)+k-1
+        }
+        if(i<j){
+            result=c(result,min(i,k-1)/i)
+        }else{
+            result=c(result,(k+min(i-j,n-k))/i)
+        }
+        
+    }
+    max(result)
+}
 
 
 find_higherP_index <-function(cur_p, pvalues){

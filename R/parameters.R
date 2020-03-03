@@ -16,12 +16,17 @@ param_GW<-function(statistic = c("k_order",
         param2 <- sort(fill_range(range_type,param2))
         postfix <- "order_general"
     }else{
-        stopifnot(range_type=="index")
-        postfix<-statistic
+        if(range_type=="index"){
+            postfix<-paste0(statistic,"_index")
+            inference_postfix <- postfix
+        }else{
+            postfix<-paste0(statistic,"_proportion")
+        }
     }
     
     parms <- list(method = "GW",
                   postfix = postfix,
+                  inference_postfix = inference_postfix,
                   statistic = statistic,
                   param1 = param1,
                   param2 = param2,

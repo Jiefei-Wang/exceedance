@@ -9,32 +9,6 @@ exceedance_bound<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL,...){
 
 
 
-bound_GW_k_order <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...){
-    profile <- profiled_data$profile
-    params <- profiled_data$params
-    max_alpha <- profile$max_alpha
-    k<- params$param1
-    m <- profile$m
-    x_rank <- profile$x_rank
-    local_level <- profile$local_level
-    
-    
-    sorted_i <- get_ordered_index(x_rank,ri,sri,rx)
-    if(alpha>max_alpha)
-        return(min(k-1,length(sorted_i))/length(sorted_i))
-    
-    J_all <- which(local_level[k:m]>=alpha)
-    
-    if(length(J_all)==0){
-        J <- m + 1L
-    }else{
-        J <- min(J_all)+k-1
-    }
-    U <- setdiff(seq_len(m),k-1+seq_len(J-k))
-    
-    FDR <- length(intersect(U,sorted_i))/length(sorted_i)
-    FDR
-}
 
 
 
@@ -109,6 +83,83 @@ bound_general_JW <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...)
         }
     }
     FDR
+}
+
+
+
+bound_GW_k_order_index <- function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...){
+    profile <- profiled_data$profile
+    params <- profiled_data$params
+    max_alpha <- profile$max_alpha
+    k<- params$param1
+    m <- profile$m
+    x_rank <- profile$x_rank
+    local_level <- profile$local_level
+    
+    
+    if(alpha>max_alpha)
+        return(min(k-1,length(sorted_i))/length(sorted_i))
+    
+    J_all <- which(local_level[k:m]>=alpha)
+    
+    if(length(J_all)==0){
+        J <- m + 1L
+    }else{
+        J <- min(J_all)+k-1
+    }
+    U <- setdiff(seq_len(m),k-1+seq_len(J-k))
+    
+    FDR <- length(intersect(U,sorted_i))/length(sorted_i)
+    FDR
+}
+
+bound_GW_k_order_proportion <- 
+    function(profiled_data,alpha,ri=NULL,sri = NULL,rx=NULL,...){
+    profile <- profiled_data$profile
+    params <- profiled_data$params
+    
+    q<- params$param1
+    m <- profile$m
+    sx <- profile$sx
+    x_rank <- profile$x_rank
+    
+    sorted_i <- get_ordered_index(x_rank,ri,sri,rx)
+    
+    
+    k_list <- pmax(ceiling(seq_len(m)*q),1L)
+    cut <- qbeta(alpha,k_list,seq_len(m)-k_list+1L)
+    # browser()
+    nonsig_index <- rep(m+1L,m)
+    for(i in seq_along(nonsig_index)){
+        ind <- which(sx>cut[i])
+        if(length(ind!=0)){
+            if(ind[1]<=m-i+k_list[i]){
+                nonsig_index[i] <- max(ind[1],k_list[i])
+            }
+        }
+    }
+    # browser()
+    FP <- 0
+    for(n in seq_along(cut)){
+        cur_cut <- cut[n]
+        cur_k <- k_list[n]
+        index <- nonsig_index[n]
+        ## all sets are rejected
+        if(index == m+1L)
+            next
+        L <- sum(sorted_i<index)
+        if(L<=cur_k-1){
+            FP <- length(sorted_i)
+            break
+        }else{
+            if(L!=n){
+                FP <- max(FP,cur_k-1L+length(sorted_i)-L)
+            }else{
+                FP <- max(FP,cur_k-1)
+            }
+        }
+    }
+    FP/length(sorted_i)
 }
 
 

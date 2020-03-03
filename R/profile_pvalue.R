@@ -90,7 +90,7 @@ profile_general_JW<-function(x,params,...){
 
 
 
-profile_GW_k_order <- function(x, params){
+profile_GW_k_order_index <- function(x, params){
     k <- params$param1
     m <- length(x)
     sx <- sort(x)
@@ -105,6 +105,25 @@ profile_GW_k_order <- function(x, params){
         list(params = params, profile =profile)
         )
 }
+
+profile_GW_k_order_proportion <- function(x, params){
+    k <- params$param1
+    m <- length(x)
+    sx <- sort(x)
+    local_level <- pbeta(sx,k,m-seq_len(m)+1)
+    
+    x_rank <- rank(x)
+    profile <- 
+        list(local_level=local_level,x=x,sx=sx,x_rank=x_rank,m=m)
+    .exceedance_profile(
+        list(params = params, profile =profile)
+    )
+}
+
+
+
+
+
 
 profile_GW_order_general<-function(x,params,...){
     cache <- list()
