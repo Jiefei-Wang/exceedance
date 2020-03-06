@@ -1,35 +1,39 @@
 context("Test upper bound function")
-set.seed(123)
-m <- 10
 
-k_test <-function(x,k){
-    n <- length(x)
-    if(length(x)>=k)
-        pbeta(x[k],k,n-k+1)
+sample_size <- 10
+##############################
+## statistic: kth pvalue
+## algorithm: general vs general JW vs k order
+##############################
+k_test <-function(y,k){
+    n <- length(y)
+    if(length(y)>=k)
+        pbeta(y[k],k,n-k+1)
     else 
         1
 }
 test_that("General vs JW vs k order",{
+    # set.seed(123)
     for(i in 1:100){
         k<-5
         alpha <- 0.05
-        x<-rbeta(m,1,3)
+        y<-rbeta(sample_size,1,3)
         
         ## General: General
-        params1 <- param_general(function(x)k_test(x,k),algorithm = "general")
-        profile1 <- profile_pvalue(x,params1)
+        params1 <- param_general(function(y)k_test(y,k),algorithm = "general")
+        profile1 <- profile_pvalue(y,params1)
         gammabar1 = c()
-        for(j in seq_along(x)){
+        for(j in seq_along(y)){
             gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
         }
         gammabar1
         
         ## General: JW
-        params2 <- param_general(function(x)k_test2(x,k),
+        params2 <- param_general(function(y)k_test(y,k),
                                  algorithm = "JW")
-        profile2 <- profile_pvalue(x,params2)
+        profile2 <- profile_pvalue(y,params2)
         gammabar2 = c()
-        for(j in seq_along(x)){
+        for(j in seq_along(y)){
             gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
         }
         gammabar2
@@ -37,9 +41,9 @@ test_that("General vs JW vs k order",{
         
         ## GW:k order
         params3 <- param_GW(statistic = "k_order",param1 = k)
-        profile3 <- profile_pvalue(x,params3)
+        profile3 <- profile_pvalue(y,params3)
         gammabar3 = c()
-        for(j in seq_along(x)){
+        for(j in seq_along(y)){
             gammabar3[j] = exceedance_bound(profile3,alpha,sri = 1:j)
         }
         gammabar3
@@ -51,34 +55,39 @@ test_that("General vs JW vs k order",{
     }
 })
 
-###################################################
-k_test2 <-function(x,k){
-    n <- length(x)
+##############################
+## statistic: KS
+## algorithm: general vs KS
+##############################
+k_test2 <-function(y,k){
+    n <- length(y)
     k_max <- k[length(k)]
-    if(length(x)>=k_max)
-        GKSStat(x,index=k,statName = "KS")$pvalue
+    if(length(y)>=k_max)
+        generalKSStat::GKSStat(y,index=k,statName = "KS")$pvalue
     else 
         1
 }
+
 test_that("General KS vs KS",{
+    # set.seed(123)
     for(i in 1:40){
         k<-c(2,4,5)
         alpha <- 0.05
-        x<-rbeta(m,1,10)
+        y<-rbeta(sample_size,1,10)
         
-        params1 <- param_general(function(x)k_test2(x,k),
+        params1 <- param_general(function(y)k_test2(y,k),
                                  algorithm = "general")
-        profile1 <- profile_pvalue(x,params1)
+        profile1 <- profile_pvalue(y,params1)
         gammabar1 = c()
-        for(j in seq_along(x)){
+        for(j in seq_along(y)){
             gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
         }
         gammabar1
         
         params2 <- param_GW(statistic = "KS",param1 = k,param2 = k)
-        profile2 <- profile_pvalue(x,params2)
+        profile2 <- profile_pvalue(y,params2)
         gammabar2 = c()
-        for(j in seq_along(x)){
+        for(j in seq_along(y)){
             gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
         }
         gammabar2
@@ -87,34 +96,38 @@ test_that("General KS vs KS",{
         # message(i)
     }
 })
-
-k_test3 <-function(x,k){
-    n <- length(x)
+##############################
+## statistic: KS+
+## algorithm: general vs KS+
+##############################
+k_test3 <-function(y,k){
+    n <- length(y)
     k_max <- k[length(k)]
-    if(length(x)>=k_max)
-        GKSStat(x,index=k,statName = "KS+")$pvalue
+    if(length(y)>=k_max)
+        generalKSStat::GKSStat(y,index=k,statName = "KS+")$pvalue
     else 
         1
 }
 test_that("General KS+ vs KS+",{
+    # set.seed(123)
     for(i in 1:40){
         k<-c(2,4,5)
         alpha <- 0.05
-        x<-rbeta(m,1,10)
+        y<-rbeta(sample_size,1,10)
         
-        params1 <- param_general(function(x)k_test3(x,k),
+        params1 <- param_general(function(y)k_test3(y,k),
                                  algorithm = "general")
-        profile1 <- profile_pvalue(x,params1)
+        profile1 <- profile_pvalue(y,params1)
         gammabar1 = c()
-        for(j in seq_along(x)){
+        for(j in seq_along(y)){
             gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
         }
         gammabar1
         
         params2 <- param_GW(statistic = "KS",param1 = k)
-        profile2 <- profile_pvalue(x,params2)
+        profile2 <- profile_pvalue(y,params2)
         gammabar2 = c()
-        for(j in seq_along(x)){
+        for(j in seq_along(y)){
             gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
         }
         gammabar2
@@ -124,4 +137,92 @@ test_that("General KS+ vs KS+",{
     }
 })
 
-###################################################
+##############################
+## statistic: q quantile
+## algorithm: general JW vs q quantile
+##############################
+q_quantile <-function(y,q){
+    n <- length(y)
+    k<- max(ceiling(seq_len(n)*q),1L)
+    pbeta(y[k],k,n-k+1)
+}
+test_that("General JW vs GW q quantile",{
+    # set.seed(123)
+    for(i in 1:100){
+        q<-0.1
+        alpha <- 0.05
+        y<-rbeta(sample_size,1,10)
+        
+        params1 <- param_general(function(y)q_quantile(y,q),
+                                 algorithm = "general")
+        profile1 <- profile_pvalue(y,params1)
+        gammabar1 = c()
+        for(j in seq_along(y)){
+            gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
+        }
+        gammabar1
+        
+        
+        params2 <- param_GW(statistic = "k_order",param1 = q,
+                            range_type = "proportion")
+        profile2 <- profile_pvalue(y,params2)
+        gammabar2 = c()
+        for(j in seq_along(y)){
+            gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
+        }
+        gammabar2
+        
+        expect_equal(gammabar1,gammabar2)
+    }
+})
+
+##############################
+## statistic: combined k order
+## algorithm: manually do k order vs combined
+##############################
+
+
+test_that("combined k order",{
+    # set.seed(123)
+    for(i in 1:100){
+        q<-0.1
+        alpha <- 0.05
+        y<-rbeta(sample_size,1,10)
+        
+        params1 <- param_GW(statistic = "k_order",param1 = 2,range_type = "index")
+        params2 <- param_GW(statistic = "k_order",param1 = 3,range_type = "index")
+        params3 <- param_combine(params1,params2)
+        
+        
+        
+        profile1 <- profile_pvalue(y,params1)
+        gammabar1 = c()
+        for(j in seq_along(y)){
+            gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
+        }
+        gammabar1
+        
+        profile2 <- profile_pvalue(y,params2)
+        gammabar2 = c()
+        for(j in seq_along(y)){
+            gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
+        }
+        gammabar2
+        
+        profile3 <- profile_pvalue(y,params3)
+        gammabar3 = c()
+        for(j in seq_along(y)){
+            gammabar3[j] = exceedance_bound(profile3,alpha*2,sri = 1:j)
+        }
+        gammabar3
+        
+        expect_equal(gammabar3,pmin(gammabar1,gammabar2))
+    }
+})
+
+
+
+
+
+
+

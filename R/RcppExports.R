@@ -29,3 +29,11 @@ print_bit_list <- function(bit_list) {
     .Call(`_exceedance_print_bit_list`, bit_list)
 }
 
+C_get_range_by_bound <- function(R_sx, R_l, R_h) {
+    .Call(`_exceedance_C_get_range_by_bound`, R_sx, R_l, R_h)
+}
+
+C_GW_compute_FDR <- function(sorted_i, R_H, R_L, rj_num, n) {
+    .Call(`_exceedance_C_GW_compute_FDR`, sorted_i, R_H, R_L, rj_num, n)
+}
+

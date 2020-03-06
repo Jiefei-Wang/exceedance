@@ -86,6 +86,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// C_get_range_by_bound
+SEXP C_get_range_by_bound(SEXP R_sx, SEXP R_l, SEXP R_h);
+RcppExport SEXP _exceedance_C_get_range_by_bound(SEXP R_sxSEXP, SEXP R_lSEXP, SEXP R_hSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type R_sx(R_sxSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_l(R_lSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_h(R_hSEXP);
+    rcpp_result_gen = Rcpp::wrap(C_get_range_by_bound(R_sx, R_l, R_h));
+    return rcpp_result_gen;
+END_RCPP
+}
+// C_GW_compute_FDR
+double C_GW_compute_FDR(SEXP sorted_i, SEXP R_H, SEXP R_L, int rj_num, int n);
+RcppExport SEXP _exceedance_C_GW_compute_FDR(SEXP sorted_iSEXP, SEXP R_HSEXP, SEXP R_LSEXP, SEXP rj_numSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type sorted_i(sorted_iSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_H(R_HSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_L(R_LSEXP);
+    Rcpp::traits::input_parameter< int >::type rj_num(rj_numSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(C_GW_compute_FDR(sorted_i, R_H, R_L, rj_num, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_exceedance_get_bit_obj", (DL_FUNC) &_exceedance_get_bit_obj, 1},
@@ -95,6 +123,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_exceedance_get_inter_number", (DL_FUNC) &_exceedance_get_inter_number, 2},
     {"_exceedance_get_list_inter_number", (DL_FUNC) &_exceedance_get_list_inter_number, 3},
     {"_exceedance_print_bit_list", (DL_FUNC) &_exceedance_print_bit_list, 1},
+    {"_exceedance_C_get_range_by_bound", (DL_FUNC) &_exceedance_C_get_range_by_bound, 3},
+    {"_exceedance_C_GW_compute_FDR", (DL_FUNC) &_exceedance_C_GW_compute_FDR, 5},
     {NULL, NULL, 0}
 };
 

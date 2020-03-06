@@ -1,4 +1,5 @@
-pkg_data <- new.env()
+pkg_data <- list()
+pkg_data$criticals <- new.env()
 
 call_func <- function(root, postfix, ...){
     func_name <- paste0(c(root,postfix),collapse="_")

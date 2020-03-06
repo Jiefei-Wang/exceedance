@@ -32,28 +32,6 @@ GW_k_order_tau_hat<-function(i,J,k,m){
         return((k-1)/i)
     }
 }
-GW__proportion_k_order_tau_hat<-function(i,k,m,sx){
-    cut <- qbeta(alpha,k,seq_len(m-k+1))
-    result <- c()
-    for(l in seq_along(cut)){
-        cur_cut <- cut[l]
-        n <- k+l-1
-        index <- k:(m-n+k)
-        j_list <- which(sx[index]>cur_cut)
-        if(length(j_list)==0){
-            j=m+1
-        }else{
-            j <- min(j_list)+k-1
-        }
-        if(i<j){
-            result=c(result,min(i,k-1)/i)
-        }else{
-            result=c(result,(k+min(i-j,n-k))/i)
-        }
-        
-    }
-    max(result)
-}
 
 
 find_higherP_index <-function(cur_p, pvalues){
@@ -102,9 +80,8 @@ enum.choose <- function(x, k) {
 
 
 ######################################################
-## GW general ordered statistics algorithm
+## GW: general JW algorithm
 ######################################################
-
 get_index_from_proportion<-function(n,param){
     if(is.null(param)) return(param)
     param <- ceiling(param*n)
@@ -145,58 +122,3 @@ process_local_critical <- function(bound,indexL,indexU){
     bound$l <- l
     bound
 }
-## get the range index L_i,H_i
-## such that x[L_i]>=l_i and x[H_i] <= h_i 
-get_range_by_bound<-function(sx,bound){
-    nx <- length(x)
-    l <- bound$l
-    h <- bound$h
-    n <- length(l)
-    L <- rep(0, n)
-    H <- rep(0, n)
-    index_x_l <-1L
-    index_x_h <- nx
-    for(i in seq_len(n)){
-        j<- n-i+1L
-        repeat{
-            if(sx[index_x_l]>=l[i]&&index_x_l>=i){
-                L[i] <- index_x_l
-                break
-            }else{
-                index_x_l <- index_x_l +1L
-                if(index_x_l == nx+1L){
-                    return(NULL)
-                }
-            }
-        }
-        repeat{
-            if(sx[index_x_h] <= h[j]&&nx-index_x_h+1L>=i){
-                H[j] <- index_x_h
-                break
-            }else{
-                index_x_h <- index_x_h -1L
-                if(index_x_h == 0L){
-                    return(NULL)
-                }
-            }
-        }
-    }
-    # 
-    # if(n==6)
-    #     browser()
-    ## shrink the range to make sure the upper bound
-    ## of H is reachable by some sequences of x
-    for(i in rev(seq_len(n-1L))){
-        H[i] <- min(H[i],H[i+1L]-1L)
-    }
-    if(any(L>H)){
-        return(NULL)
-    }
-    list(L=L,H=H)
-}
-
-
-
-
-
-
