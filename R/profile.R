@@ -1,38 +1,5 @@
-#' @export
-profile_pvalue<-function(x, params,...){
-    m <- length(x)
-    sx <- sort(x,index.return = TRUE)
-    x_rank <- rep(0,m)
-    x_rank[sx$ix] <- seq_len(m)
-    profile <- list(
-        m = m,
-        x = x,
-        x_sort = as.numeric(sx$x),
-        x_sort_index = sx$ix,
-        x_rank = x_rank
-    )
-    
-    profiled_data <- .exceedance_profile(
-        list(params = params, profile =profile)
-    )
-    
-    method <- params$method
-    if(!is.null(profiled_data$params$postfix_profile))
-        postfix <- profiled_data$params$postfix_profile
-    else
-        postfix <-profiled_data$params$postfix
-    
-    result <- call_func(root = "profile", 
-                        postfix= c(method,postfix),
-                        x=x,params = params,
-                        profiled_data=profiled_data,...)
-    result
-}
-
-
-
 #pvalue_func <- function(x)ks.test(x,punif)$p.value
-profile_general_general<-function(x,params,profiled_data,...){
+profile_general_GW_general<-function(x,params,profiled_data,...){
     pvalue_func <- params$pvalue_func
     profile <- profiled_data$profile
     m <-length(x)
@@ -98,7 +65,7 @@ profile_general_general<-function(x,params,profiled_data,...){
 }
 
 
-profile_general_JW<-function(x,params,profiled_data,...){
+profile_general_GW_JW<-function(x,params,profiled_data,...){
     cache <- list()
     cache$search_path <- new.env()
     cache$pvalues <- new.env()
@@ -109,7 +76,7 @@ profile_general_JW<-function(x,params,profiled_data,...){
 
 
 
-profile_GW_k_order_index <- function(x, params,profiled_data,...){
+profile_fast_GW_kth_p_index <- function(x, params,profiled_data,...){
     profile <- profiled_data$profile
     k <- params$param1
     m <- profile$m
@@ -131,7 +98,7 @@ profile_GW_k_order_index <- function(x, params,profiled_data,...){
     profiled_data
 }
 
-profile_GW_k_order_proportion <- function(x, params,profiled_data,...){
+profile_fast_GW_kth_p_proportion <- function(x, params,profiled_data,...){
     profile <- profiled_data$profile
     k <- params$param1
     m <- profile$m
@@ -150,7 +117,7 @@ profile_GW_k_order_proportion <- function(x, params,profiled_data,...){
 
 
 
-profile_GW_order_general<-function(x,params,profiled_data,...){
+profile_fast_GW_order_general<-function(x,params,profiled_data,...){
     range_type <- params$range_type
     param1 <- params$param1
     param2 <- params$param2

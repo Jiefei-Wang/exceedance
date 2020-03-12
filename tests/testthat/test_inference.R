@@ -22,8 +22,8 @@ test_that("combined k order",{
         y<-rbeta(sample_size,1,10)
         sy <- sort(y,index.return = TRUE)
         
-        params1 <- param_general(function(y)k_test(y,k),algorithm = "JW")
-        params2 <- param_GW(statistic = "k_order",param1 = k,range_type = "index")
+        params1 <- param_general_GW(function(y)k_test(y,k),algorithm = "JW")
+        params2 <- param_fast_GW(statistic = "kth_p",param1 = k,range_type = "index")
         
         profile1 <- profile_pvalue(y,params1)
         profile2 <- profile_pvalue(y,params2)
@@ -57,8 +57,8 @@ test_that("combined k order",{
         bound <- 0.4
         y<-rbeta(sample_size,1,10)
         
-        params1 <- param_GW(statistic = "k_order",param1 = 2,range_type = "index")
-        params2 <- param_GW(statistic = "k_order",param1 = 3,range_type = "index")
+        params1 <- param_fast_GW(statistic = "kth_p",param1 = 2,range_type = "index")
+        params2 <- param_fast_GW(statistic = "kth_p",param1 = 3,range_type = "index")
         params3 <- param_combine(params1,params2)
         
         profile1 <- profile_pvalue(y,params1)

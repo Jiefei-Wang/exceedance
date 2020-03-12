@@ -1,26 +1,4 @@
-## Reject: pvalue <= alpha
-## not reject: pvalue > alpha
-
-#' @export
-exceedance_bound<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL,...){
-    x_rank <- profiled_data$profile$x_rank
-    sorted_i <- as.integer(get_ordered_index(x_rank,ri,sri,rx))
-    
-    method <- profiled_data$params$method
-    if(!is.null(profiled_data$params$postfix_bound))
-        postfix <- profiled_data$params$postfix_bound
-    else
-        postfix <-profiled_data$params$postfix
-    
-    result <- call_func(root = "bound", postfix= c(method,postfix),
-                        profiled_data = profiled_data, alpha = alpha,
-                        ri=ri,sri =sri,rx=rx,sorted_i,...)
-    result
-    
-}
-
-
-bound_general_general <- function(profiled_data,alpha,
+bound_general_GW_general <- function(profiled_data,alpha,
                                   sorted_i,...){
     profile <- profiled_data$profile
     params <- profiled_data$params
@@ -48,7 +26,7 @@ bound_general_general <- function(profiled_data,alpha,
     FDR
 }
 
-bound_general_JW <- function(profiled_data,alpha,
+bound_general_GW_JW <- function(profiled_data,alpha,
                              sorted_i,...){
     profile <- profiled_data$profile
     params <- profiled_data$params
@@ -93,7 +71,7 @@ bound_general_JW <- function(profiled_data,alpha,
 
 
 ## Need optimization
-bound_GW_k_order_index <- function(profiled_data,alpha,
+bound_fast_GW_kth_p_index <- function(profiled_data,alpha,
                                    sorted_i,...){
     profile <- profiled_data$profile
     params <- profiled_data$params
@@ -120,7 +98,7 @@ bound_GW_k_order_index <- function(profiled_data,alpha,
     FDR
 }
 
-bound_GW_k_order_proportion <- function(profiled_data,alpha,
+bound_fast_GW_kth_p_proportion <- function(profiled_data,alpha,
                                         sorted_i,...){
     profile <- profiled_data$profile
     params <- profiled_data$params
@@ -166,7 +144,7 @@ bound_GW_k_order_proportion <- function(profiled_data,alpha,
 }
 
 
-bound_GW_order_general <- function(profiled_data,alpha,
+bound_fast_GW_order_general <- function(profiled_data,alpha,
                                    sorted_i,...){
     profile <- profiled_data$profile
     params <- profiled_data$params

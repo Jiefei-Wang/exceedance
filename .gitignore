@@ -41,3 +41,4 @@ vignettes/*.pdf
 inst/
 
 *.Rproj
+inst/doc

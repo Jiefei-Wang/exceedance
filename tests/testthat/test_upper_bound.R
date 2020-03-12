@@ -20,7 +20,7 @@ test_that("General vs JW vs k order",{
         y<-rbeta(sample_size,1,3)
         
         ## General: General
-        params1 <- param_general(function(y)k_test(y,k),algorithm = "general")
+        params1 <- param_general_GW(function(y)k_test(y,k),algorithm = "general")
         profile1 <- profile_pvalue(y,params1)
         gammabar1 = c()
         for(j in seq_along(y)){
@@ -29,7 +29,7 @@ test_that("General vs JW vs k order",{
         gammabar1
         
         ## General: JW
-        params2 <- param_general(function(y)k_test(y,k),
+        params2 <- param_general_GW(function(y)k_test(y,k),
                                  algorithm = "JW")
         profile2 <- profile_pvalue(y,params2)
         gammabar2 = c()
@@ -40,7 +40,7 @@ test_that("General vs JW vs k order",{
         
         
         ## GW:k order
-        params3 <- param_GW(statistic = "k_order",param1 = k)
+        params3 <- param_fast_GW(statistic = "kth_p",param1 = k)
         profile3 <- profile_pvalue(y,params3)
         gammabar3 = c()
         for(j in seq_along(y)){
@@ -75,7 +75,7 @@ test_that("General KS vs KS",{
         alpha <- 0.05
         y<-rbeta(sample_size,1,10)
         
-        params1 <- param_general(function(y)k_test2(y,k),
+        params1 <- param_general_GW(function(y)k_test2(y,k),
                                  algorithm = "general")
         profile1 <- profile_pvalue(y,params1)
         gammabar1 = c()
@@ -84,7 +84,7 @@ test_that("General KS vs KS",{
         }
         gammabar1
         
-        params2 <- param_GW(statistic = "KS",param1 = k,param2 = k)
+        params2 <- param_fast_GW(statistic = "KS",param1 = k,param2 = k)
         profile2 <- profile_pvalue(y,params2)
         gammabar2 = c()
         for(j in seq_along(y)){
@@ -115,7 +115,7 @@ test_that("General KS+ vs KS+",{
         alpha <- 0.05
         y<-rbeta(sample_size,1,10)
         
-        params1 <- param_general(function(y)k_test3(y,k),
+        params1 <- param_general_GW(function(y)k_test3(y,k),
                                  algorithm = "general")
         profile1 <- profile_pvalue(y,params1)
         gammabar1 = c()
@@ -124,7 +124,7 @@ test_that("General KS+ vs KS+",{
         }
         gammabar1
         
-        params2 <- param_GW(statistic = "KS",param1 = k)
+        params2 <- param_fast_GW(statistic = "KS",param1 = k)
         profile2 <- profile_pvalue(y,params2)
         gammabar2 = c()
         for(j in seq_along(y)){
@@ -153,7 +153,7 @@ test_that("General JW vs GW q quantile",{
         alpha <- 0.05
         y<-rbeta(sample_size,1,10)
         
-        params1 <- param_general(function(y)q_quantile(y,q),
+        params1 <- param_general_GW(function(y)q_quantile(y,q),
                                  algorithm = "general")
         profile1 <- profile_pvalue(y,params1)
         gammabar1 = c()
@@ -163,7 +163,7 @@ test_that("General JW vs GW q quantile",{
         gammabar1
         
         
-        params2 <- param_GW(statistic = "k_order",param1 = q,
+        params2 <- param_fast_GW(statistic = "kth_p",param1 = q,
                             range_type = "proportion")
         profile2 <- profile_pvalue(y,params2)
         gammabar2 = c()
@@ -189,8 +189,8 @@ test_that("combined k order",{
         alpha <- 0.05
         y<-rbeta(sample_size,1,10)
         
-        params1 <- param_GW(statistic = "k_order",param1 = 2,range_type = "index")
-        params2 <- param_GW(statistic = "k_order",param1 = 3,range_type = "index")
+        params1 <- param_fast_GW(statistic = "kth_p",param1 = 2,range_type = "index")
+        params2 <- param_fast_GW(statistic = "kth_p",param1 = 3,range_type = "index")
         params3 <- param_combine(params1,params2)
         
         
