@@ -13,7 +13,7 @@
 #' @inherit exceedance_inference examples
 #' @return an exceedance_profile object
 #' @export
-profile_pvalue<-function(x, params,...){
+exceedance_profile<-function(x, params,...){
     m <- length(x)
     sx <- sort(x,index.return = TRUE)
     x_rank <- rep(0,m)

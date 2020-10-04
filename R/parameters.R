@@ -57,8 +57,9 @@
 #' it can lead to a significant result. Conversely,
 #' `param2` determines which large sample(s) can be treated as significance.
 #' Both `param1` and `param2` can be a vector of integer. By default,
-#' if `param1` and `param2` are null, all samples will be included in the test
-#' statistics. 
+#' if both `param1` and `param2` are null, it is equivalent to `param1 = c(0, 1)`, 
+#' `param2 = NULL` and `range_type = "proportion"`.
+#' 
 #' If `range_type = "proportion"`, `param1` and `param2` can be length 1 vectors, 
 #' which will be explained as the index from `1` to `max(floor(n*param),1)`, or they can
 #' be length 2 vectors, where the index ranges from `max(floor(n*param[1]),1)` to 
@@ -116,7 +117,7 @@ param_fast_GW<-function(statistic = c("kth_p",
                   postfix_profile = postfix_profile,
                   postfix_bound = postfix_bound,
                   postfix_inference = postfix_inference,
-                  statistic = statistic,
+                  algorithm = statistic,
                   param1 = param1,
                   param2 = param2,
                   range_type=range_type)
@@ -197,12 +198,20 @@ param_general_GW<-function(pvalue_func,algorithm = c("general","JW")){
     .exceedance_parameters(parms)
 }
 
-
-param_combine<-function(...,alpha_weight = rep(1,length(list(...)))){
-    test_params <- list(...)
-    parms <- list(method = "combine",
+#' @export
+param_combine<-function(...,param_list = NULL, alpha_weight = NULL){
+    if(!is.null(param_list)){
+        test_params <- param_list
+    }else{
+        test_params <- list(...)
+    }
+    if(is.null(alpha_weight)){
+        alpha_weight <- rep(1,length(test_params))
+    }
+    parms <- list(method = "combine_GW",
                   test_params = test_params,
-                  algorithm = "GW",
+                  algorithm = "combine_GW",
                   alpha_weight=alpha_weight)
+    parms
 }
 

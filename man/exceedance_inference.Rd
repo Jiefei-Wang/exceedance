@@ -2,7 +2,7 @@
 % Please edit documentation in R/package_base.R
 \name{exceedance_inference}
 \alias{exceedance_inference}
-\title{Conducting statistical inference while controlling the exceedance rate}
+\title{Perform multiple hypothesis testing while controlling the exceedance rate}
 \usage{
 exceedance_inference(profiled_data, alpha, bound, ...)
 }
@@ -15,8 +15,11 @@ exceedance_inference(profiled_data, alpha, bound, ...)
 
 \item{...}{not used}
 }
+\value{
+Indices of the hypotheses that are rejected in the procedure.
+}
 \description{
-Conducting statistical inference while controlling the exceedance rate.
+Perform multiple hypothesis testing while controlling the exceedance rate.
 The exceedance rate is Prob(FDP > bound), where FDP is the false discover
 proportion defined by the number of false positives devided by the number
 of total rejections. Small FDP with large number of reject is favorable

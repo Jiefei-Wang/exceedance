@@ -21,7 +21,7 @@ test_that("General vs JW vs k order",{
         
         ## General: General
         params1 <- param_general_GW(function(y)k_test(y,k),algorithm = "general")
-        profile1 <- profile_pvalue(y,params1)
+        profile1 <- exceedance_profile(y,params1)
         gammabar1 = c()
         for(j in seq_along(y)){
             gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
@@ -31,7 +31,7 @@ test_that("General vs JW vs k order",{
         ## General: JW
         params2 <- param_general_GW(function(y)k_test(y,k),
                                  algorithm = "JW")
-        profile2 <- profile_pvalue(y,params2)
+        profile2 <- exceedance_profile(y,params2)
         gammabar2 = c()
         for(j in seq_along(y)){
             gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
@@ -41,7 +41,7 @@ test_that("General vs JW vs k order",{
         
         ## GW:k order
         params3 <- param_fast_GW(statistic = "kth_p",param1 = k)
-        profile3 <- profile_pvalue(y,params3)
+        profile3 <- exceedance_profile(y,params3)
         gammabar3 = c()
         for(j in seq_along(y)){
             gammabar3[j] = exceedance_bound(profile3,alpha,sri = 1:j)
@@ -77,7 +77,7 @@ test_that("General KS vs KS",{
         
         params1 <- param_general_GW(function(y)k_test2(y,k),
                                  algorithm = "general")
-        profile1 <- profile_pvalue(y,params1)
+        profile1 <- exceedance_profile(y,params1)
         gammabar1 = c()
         for(j in seq_along(y)){
             gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
@@ -85,7 +85,7 @@ test_that("General KS vs KS",{
         gammabar1
         
         params2 <- param_fast_GW(statistic = "KS",param1 = k,param2 = k)
-        profile2 <- profile_pvalue(y,params2)
+        profile2 <- exceedance_profile(y,params2)
         gammabar2 = c()
         for(j in seq_along(y)){
             gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
@@ -117,7 +117,7 @@ test_that("General KS+ vs KS+",{
         
         params1 <- param_general_GW(function(y)k_test3(y,k),
                                  algorithm = "general")
-        profile1 <- profile_pvalue(y,params1)
+        profile1 <- exceedance_profile(y,params1)
         gammabar1 = c()
         for(j in seq_along(y)){
             gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
@@ -125,7 +125,7 @@ test_that("General KS+ vs KS+",{
         gammabar1
         
         params2 <- param_fast_GW(statistic = "KS",param1 = k)
-        profile2 <- profile_pvalue(y,params2)
+        profile2 <- exceedance_profile(y,params2)
         gammabar2 = c()
         for(j in seq_along(y)){
             gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
@@ -155,7 +155,7 @@ test_that("General JW vs GW q quantile",{
         
         params1 <- param_general_GW(function(y)q_quantile(y,q),
                                  algorithm = "general")
-        profile1 <- profile_pvalue(y,params1)
+        profile1 <- exceedance_profile(y,params1)
         gammabar1 = c()
         for(j in seq_along(y)){
             gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
@@ -165,7 +165,7 @@ test_that("General JW vs GW q quantile",{
         
         params2 <- param_fast_GW(statistic = "kth_p",param1 = q,
                             range_type = "proportion")
-        profile2 <- profile_pvalue(y,params2)
+        profile2 <- exceedance_profile(y,params2)
         gammabar2 = c()
         for(j in seq_along(y)){
             gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
@@ -195,21 +195,21 @@ test_that("combined k order",{
         
         
         
-        profile1 <- profile_pvalue(y,params1)
+        profile1 <- exceedance_profile(y,params1)
         gammabar1 = c()
         for(j in seq_along(y)){
             gammabar1[j] = exceedance_bound(profile1,alpha,sri = 1:j)
         }
         gammabar1
         
-        profile2 <- profile_pvalue(y,params2)
+        profile2 <- exceedance_profile(y,params2)
         gammabar2 = c()
         for(j in seq_along(y)){
             gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
         }
         gammabar2
         
-        profile3 <- profile_pvalue(y,params3)
+        profile3 <- exceedance_profile(y,params3)
         gammabar3 = c()
         for(j in seq_along(y)){
             gammabar3[j] = exceedance_bound(profile3,alpha*2,sri = 1:j)

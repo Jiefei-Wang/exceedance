@@ -121,17 +121,17 @@ profile_fast_GW_order_general<-function(x,params,profiled_data,...){
     range_type <- params$range_type
     param1 <- params$param1
     param2 <- params$param2
-    statistic <- params$statistic
+    statistic <- params$algorithm
     
     profiled_data$profile$params_key <- digest::digest(list(range_type,param1,param2,statistic))
     profiled_data
 }
 
-profile_combine<-function(x,params,profiled_data,...){
+profile_combine_GW<-function(x,params,profiled_data,...){
     test_params <- params$test_params
     # x_sort <- profiled_data$profile$x_sort
     
-    profiles <- lapply(test_params,function(param)profile_pvalue(x=x,params=param,...))
+    profiles <- lapply(test_params,function(param)exceedance_profile(x=x,params=param,...))
     profiled_data$profile$profiles <- profiles
     profiled_data
 }

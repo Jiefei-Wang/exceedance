@@ -70,8 +70,9 @@ For example, if \code{param1 = 2} and the second smallest sample is significantl
 it can lead to a significant result. Conversely,
 \code{param2} determines which large sample(s) can be treated as significance.
 Both \code{param1} and \code{param2} can be a vector of integer. By default,
-if \code{param1} and \code{param2} are null, all samples will be included in the test
-statistics.
+if both \code{param1} and \code{param2} are null, it is equivalent to \code{param1 = c(0, 1)},
+\code{param2 = NULL} and \code{range_type = "proportion"}.
+
 If \code{range_type = "proportion"}, \code{param1} and \code{param2} can be length 1 vectors,
 which will be explained as the index from \code{1} to \code{max(floor(n*param),1)}, or they can
 be length 2 vectors, where the index ranges from \code{max(floor(n*param[1]),1)} to

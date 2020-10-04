@@ -7,9 +7,8 @@
 param_general_GW(pvalue_func, algorithm = c("general", "JW"))
 }
 \arguments{
-\item{pvalue_func}{function, The pvalue function for a GOF test statistic which
-tests whether the data is from a uniform(0,1) distribution.
-The inpute samples(pvalues) will be ascending sorted.}
+\item{pvalue_func}{function, The pvalue function for a uniform(0,1)
+distributional test. The inpute samples(pvalues) will be ascending sorted.}
 
 \item{algorithm}{character, The searching algorithm that will be used to find
 the upper bound of the FDR, see details.}
@@ -34,21 +33,21 @@ Please see the function \code{param_fast_GW} for more details.
 \emph{Note: We will use the term \code{samples} and \code{pvalues} interchangebly to refer
 the data gathered by a large-scale inference procedure.}
 
-Computing the upper bound of the FDR using the GW method is computationally
+Computing the upper bound of the FDP using the GW method is computationally
 challenging.
 Given the number of hypotheses \code{n}, the naive algorithm requires approximately \code{2^n}
 operations, which make it only available for small inference. Therefore,
-JW algorithm is developed to reduce the computational burden, but it also
+JW algorithm is developed for reducing the computational burden, but it also
 add a restriction on the test statistic.
 
-If \code{general = "general"}, that means the naive method proposed by GW.
+If \code{general = "general"}, it means the naive method proposed by GW.
 There is no additional assumptions on the pvalue function except the
 regular definition of the pvalue.
 
 If \code{general = "JW"}, the pvalue function must be a non-decreasing function
 for its input samples. That is, if input1 and input2 are two set of
-ascending sorted samples and input1 is greater than the input2 for all elements,
-then the resulting pvalue for input1 should not be smaller than the
+ascending sorted samples and input1 is not smaller than the input2 for all
+elements, then the resulting pvalue for input1 should not be smaller than the
 pvalue for input2.
 
 With an additional restriction on the pvalue function, the JW algorithm has

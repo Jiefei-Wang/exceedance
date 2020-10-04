@@ -2,9 +2,11 @@
 
 export(exceedance_bound)
 export(exceedance_inference)
+export(exceedance_profile)
+export(param_combine)
 export(param_fast_GW)
 export(param_general_GW)
-export(profile_pvalue)
+exportMethods(show)
 importFrom(Rcpp,sourceCpp)
 importFrom(digest,digest)
 importFrom(generalKSStat,GKSCritical)

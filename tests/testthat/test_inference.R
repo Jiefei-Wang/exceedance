@@ -25,8 +25,8 @@ test_that("combined k order",{
         params1 <- param_general_GW(function(y)k_test(y,k),algorithm = "JW")
         params2 <- param_fast_GW(statistic = "kth_p",param1 = k,range_type = "index")
         
-        profile1 <- profile_pvalue(y,params1)
-        profile2 <- profile_pvalue(y,params2)
+        profile1 <- exceedance_profile(y,params1)
+        profile2 <- exceedance_profile(y,params2)
         
         result1 <- exceedance_inference(profile1,alpha=alpha,bound=bound)
         result2 <- exceedance_inference(profile2,alpha=alpha,bound=bound)
@@ -61,9 +61,9 @@ test_that("combined k order",{
         params2 <- param_fast_GW(statistic = "kth_p",param1 = 3,range_type = "index")
         params3 <- param_combine(params1,params2)
         
-        profile1 <- profile_pvalue(y,params1)
-        profile2 <- profile_pvalue(y,params2)
-        profile3 <- profile_pvalue(y,params3)
+        profile1 <- exceedance_profile(y,params1)
+        profile2 <- exceedance_profile(y,params2)
+        profile3 <- exceedance_profile(y,params3)
         
         result1 <- exceedance_inference(profile1,alpha=alpha,bound=bound)
         result2 <- exceedance_inference(profile2,alpha=alpha,bound=bound)

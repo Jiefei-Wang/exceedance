@@ -151,7 +151,7 @@ bound_fast_GW_order_general <- function(profiled_data,alpha,
     range_type <- params$range_type
     param1 <- params$param1
     param2 <- params$param2
-    statistic <- params$statistic
+    statistic <- params$algorithm
     m <- profile$m
     x_sort<- profile$x_sort
     params_key <- profile$params_key
@@ -162,17 +162,15 @@ bound_fast_GW_order_general <- function(profiled_data,alpha,
     ## reduce the loop number by checking the current FDR
     FDR <- 0
     for(n in rev(seq_len(m))){
-        # if(n==5)
-        #     browser()
         if(range_type=="proportion"){
             index1 <- get_index_from_proportion(n=n,param=param1)
             index2 <- get_index_from_proportion(n=n,param=param2)
         }else{
-            if(!is.null(param1)&&param1[length(param1)]>n){
-                FDR <- max(FDR, min(n,rj_num) / rj_num)
-                next
-            }
-            if(!is.null(param2)&&param2[length(param2)]>n){
+            param1 <- param1[param1<=n]
+            param2 <- param2[param2<=n]
+            ## Check if the current sample size satiefies
+            ## The minimum requirement of the test.
+            if(length(param1)==0&&length(param2)==0){
                 FDR <- max(FDR, min(n,rj_num) / rj_num)
                 next
             }
@@ -181,7 +179,7 @@ bound_fast_GW_order_general <- function(profiled_data,alpha,
         }
         ## generic bound
         critical_key <- paste0(preprocessed_key,n)
-        if(!exists(critical_key,envir=pkg_data$criticals)){
+        if(TRUE||!exists(critical_key,envir=pkg_data$criticals)){
             bound <- get_local_critical(stat = statistic, n=n, alpha=alpha,
                                         indexL=index1,indexU=index2)
             ## This is the true bound
@@ -205,7 +203,7 @@ bound_fast_GW_order_general <- function(profiled_data,alpha,
     FDR
 }
 
-bound_combine <- function(profiled_data,alpha,
+bound_combine_GW <- function(profiled_data,alpha,
                                    sorted_i,...){
     profiles <- profiled_data$profile$profiles
     alpha_weight <- profiled_data$params$alpha_weight

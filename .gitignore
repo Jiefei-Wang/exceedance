@@ -42,3 +42,8 @@ inst/
 
 *.Rproj
 inst/doc
+
+*.txt
+*.xlsx
+*.xls
+*.RData
