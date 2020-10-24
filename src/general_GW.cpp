@@ -17,7 +17,8 @@ class Subset_iterator{
           index[subset_size] = sample_size;
       }
       bool next(){
-          for(size_t i = subset_size-1;i>=0;i--){
+          for(size_t k = 0;k<subset_size; k++){
+              size_t i = subset_size - k -1;
               if(index[i]+1!=index[i+1]){
                   index[i] ++;
                   for(size_t j=i+1;j<subset_size-1;j++){
@@ -49,7 +50,7 @@ SEXP general_GW_construct_subset(Function pvalue_func, NumericVector x){
     R_xlen_t m = XLENGTH(x);
     NumericVector subset = NumericVector(m);
     Bit_set_class subset_index(m);
-    for(size_t curN =m-1;curN>=0;curN--){
+    for(size_t curN =m-1;curN>0;curN--){
         Subset_iterator iterator(m, curN);
         do{
             subset_index.set_bit(iterator.index);
