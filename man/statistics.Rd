@@ -34,7 +34,7 @@ statistics, the default value is \code{1}. see details.}
 statistics, see details.}
 }
 \value{
-a \code{generalKSStat} S3 object
+a \code{GKSStat} S3 object
 }
 \description{
 Compute the Kolmogorov-Smirnov, Berk-Jones or the higher criticism statistics

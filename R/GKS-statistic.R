@@ -69,7 +69,7 @@
 #' GKSStat(x = x, statName = "KS+")
 #' GKSStat(x = x, statName = "KS-")
 #' 
-#' @return a `generalKSStat` S3 object
+#' @return a `GKSStat` S3 object
 #' @rdname statistics
 #' @export
 GKSStat <- function(

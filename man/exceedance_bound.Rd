@@ -4,7 +4,7 @@
 \alias{exceedance_bound}
 \title{Computing the confidence envolop of the false discover proportion for the data}
 \usage{
-exceedance_bound(profiled_data, alpha, ri = NULL, sri = NULL, rx = NULL, ...)
+exceedance_bound(profiled_data, alpha, ri = NULL, sri = NULL, rx = NULL)
 }
 \arguments{
 \item{profiled_data}{an exceedance_profile object}
@@ -18,8 +18,6 @@ corresponding hypotheses are rejected, see details.}
 
 \item{rx}{numeric, the value of the pvalues which the
 corresponding hypotheses are rejected, see details.}
-
-\item{...}{not used}
 }
 \value{
 a \code{1 - alpha} level confidence envolop

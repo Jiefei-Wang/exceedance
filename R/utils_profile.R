@@ -91,11 +91,11 @@ get_index_from_proportion<-function(n,param){
 
 get_local_critical <-function(stat, n, alpha, indexL,indexU){
     critical <- GKSCritical(alpha=alpha,n=n,indexL=indexL,indexU=indexU,statName=stat)
-    level <- do.call(paste0(stat,"LocalCritical"),args = list(
-        stat= critical,
-        n=n
-    ),
-    envir = getNamespace("generalKSStat"))
+    # level <- do.call(paste0(stat,"LocalCritical"),args = list(
+    #     stat= critical,
+    #     n=n
+    # ),
+    # envir = getNamespace("generalKSStat"))
     level
 }
 ## modify the local criticals according to the index
