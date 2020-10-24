@@ -43,8 +43,6 @@ profile_general_GW_general<-function(x,param,profile){
     pvalue_func <- param$pvalue_func
     m <-length(x)
     x_sort <- profile$x_sort
-    
-    
     ## The set that contains all possible combination
     ## of the data. The combination is stored in the 
     ## sorted index form.

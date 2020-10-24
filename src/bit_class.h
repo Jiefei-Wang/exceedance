@@ -3,23 +3,18 @@
 #include <vector>
 #include <string>
 using namespace Rcpp;
-using std::bitset;
-using std::vector;
-using std::string;
 
 
-class bitObj
+class Bit_set_class
 {
 public:
-	int eltNum;
-	vector<bitset<8>*> bit_list;
-
-
-	bitObj(int eltNum);
-	int inter_sum(bitObj* another);
-	int count();
-	void set_bit(IntegerVector index);
-	string to_string();
-	~bitObj();
+	size_t element_num;
+	std::vector<std::bitset<8>> bit_list;
+	Bit_set_class(size_t eltNum);
+	size_t count_interception(const Bit_set_class& another);
+	bool contain(const Bit_set_class& another);
+	size_t count();
+	void set_bit(std::vector<size_t>& index);
+	std::string to_string();
 };
 

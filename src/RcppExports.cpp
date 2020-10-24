@@ -6,84 +6,26 @@
 
 using namespace Rcpp;
 
-// get_bit_obj
-SEXP get_bit_obj(int bit_size);
-RcppExport SEXP _exceedance_get_bit_obj(SEXP bit_sizeSEXP) {
+// general_GW_construct_subset
+SEXP general_GW_construct_subset(Function pvalue_func, NumericVector x);
+RcppExport SEXP _exceedance_general_GW_construct_subset(SEXP pvalue_funcSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type bit_size(bit_sizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_bit_obj(bit_size));
+    Rcpp::traits::input_parameter< Function >::type pvalue_func(pvalue_funcSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(general_GW_construct_subset(pvalue_func, x));
     return rcpp_result_gen;
 END_RCPP
 }
-// set_bit_obj
-void set_bit_obj(SEXP R_ptr, IntegerVector index);
-RcppExport SEXP _exceedance_set_bit_obj(SEXP R_ptrSEXP, SEXP indexSEXP) {
+// print_subset_list
+void print_subset_list(SEXP x);
+RcppExport SEXP _exceedance_print_subset_list(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type R_ptr(R_ptrSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type index(indexSEXP);
-    set_bit_obj(R_ptr, index);
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    print_subset_list(x);
     return R_NilValue;
-END_RCPP
-}
-// get_bit_count
-int get_bit_count(SEXP R_ptr);
-RcppExport SEXP _exceedance_get_bit_count(SEXP R_ptrSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type R_ptr(R_ptrSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_bit_count(R_ptr));
-    return rcpp_result_gen;
-END_RCPP
-}
-// print_bit
-std::string print_bit(SEXP R_ptr);
-RcppExport SEXP _exceedance_print_bit(SEXP R_ptrSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type R_ptr(R_ptrSEXP);
-    rcpp_result_gen = Rcpp::wrap(print_bit(R_ptr));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_inter_number
-int get_inter_number(SEXP R_ptr1, SEXP R_ptr2);
-RcppExport SEXP _exceedance_get_inter_number(SEXP R_ptr1SEXP, SEXP R_ptr2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type R_ptr1(R_ptr1SEXP);
-    Rcpp::traits::input_parameter< SEXP >::type R_ptr2(R_ptr2SEXP);
-    rcpp_result_gen = Rcpp::wrap(get_inter_number(R_ptr1, R_ptr2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_list_inter_number
-NumericVector get_list_inter_number(List bit_list, IntegerVector list_index, SEXP bit);
-RcppExport SEXP _exceedance_get_list_inter_number(SEXP bit_listSEXP, SEXP list_indexSEXP, SEXP bitSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type bit_list(bit_listSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type list_index(list_indexSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type bit(bitSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_list_inter_number(bit_list, list_index, bit));
-    return rcpp_result_gen;
-END_RCPP
-}
-// print_bit_list
-StringVector print_bit_list(List bit_list);
-RcppExport SEXP _exceedance_print_bit_list(SEXP bit_listSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type bit_list(bit_listSEXP);
-    rcpp_result_gen = Rcpp::wrap(print_bit_list(bit_list));
-    return rcpp_result_gen;
 END_RCPP
 }
 // compute_prob
@@ -146,13 +88,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_exceedance_get_bit_obj", (DL_FUNC) &_exceedance_get_bit_obj, 1},
-    {"_exceedance_set_bit_obj", (DL_FUNC) &_exceedance_set_bit_obj, 2},
-    {"_exceedance_get_bit_count", (DL_FUNC) &_exceedance_get_bit_count, 1},
-    {"_exceedance_print_bit", (DL_FUNC) &_exceedance_print_bit, 1},
-    {"_exceedance_get_inter_number", (DL_FUNC) &_exceedance_get_inter_number, 2},
-    {"_exceedance_get_list_inter_number", (DL_FUNC) &_exceedance_get_list_inter_number, 3},
-    {"_exceedance_print_bit_list", (DL_FUNC) &_exceedance_print_bit_list, 1},
+    {"_exceedance_general_GW_construct_subset", (DL_FUNC) &_exceedance_general_GW_construct_subset, 2},
+    {"_exceedance_print_subset_list", (DL_FUNC) &_exceedance_print_subset_list, 1},
     {"_exceedance_compute_prob", (DL_FUNC) &_exceedance_compute_prob, 5},
     {"_exceedance_compute_prob_fft", (DL_FUNC) &_exceedance_compute_prob_fft, 5},
     {"_exceedance_C_get_range_by_bound", (DL_FUNC) &_exceedance_C_get_range_by_bound, 3},

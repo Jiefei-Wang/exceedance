@@ -1,61 +1,73 @@
 #include "bit_class.h"
 #include <cmath> 
 
+using std::bitset;
+using std::vector;
+using std::string;
 
-bitObj::bitObj(int bit_size) {
-	eltNum = bit_size;
-	int maxElt = ceil(bit_size / 8.0);
-	bit_list.reserve(maxElt);
-	for (int i = 0; i < maxElt; i++) {
-		bitset<8> * bit = new bitset<8>;
-		bit_list.push_back(bit);
+Bit_set_class::Bit_set_class(size_t element_num):element_num(element_num) {
+	int true_element = ceil(element_num / 8.0);
+	bit_list.reserve(true_element);
+	for (int i = 0; i < true_element; i++) {
+		bit_list.emplace_back();
 	}
 }
 
-
-
-int bitObj::inter_sum(bitObj* another) {
-	if (another->eltNum != eltNum) {
+size_t Bit_set_class::count_interception(const Bit_set_class& another) {
+	if (another.element_num != element_num) {
 		Rf_error("The element numbers are not equal");
 	}
-	int result=0;
-	for (unsigned int i = 0; i < bit_list.size(); i++) {
-		result += ((*bit_list[i]) & (*another->bit_list[i])).count();
+	size_t result=0;
+	for (size_t i = 0; i < bit_list.size(); i++) {
+		const bitset<8>& left = bit_list[i];
+		const bitset<8>& right = another.bit_list[i];
+		result += (left & right).count();
 	}
 	return result;
 }
 
-void bitObj::set_bit(IntegerVector index) {
-	for (int i = 0; i < (int)index.length(); i++) {
-		int base_index = floor(index[i] / 8.0);
-		int off = index[i] - base_index* 8.0;
+bool Bit_set_class::contain(const Bit_set_class& another){
+	for (size_t i = 0; i < bit_list.size(); i++) {
+		const bitset<8>& parent = bit_list[i];
+		const bitset<8>& child = another.bit_list[i];
+		bool result = ((~parent) & child).count()==0;
+		if(!result)
+			return false;
+	}
+	return true;
+}
+
+void Bit_set_class::set_bit(std::vector<size_t>& index) {
+	for(auto& i:bit_list){
+		i.reset();
+	}
+	for (const auto i:index) {
+		if(i>=element_num)
+			continue;
+		size_t base_index = i / 8L;
+		size_t off = i % 8L;
 		//Rprintf("%d,%d,%d,%d\n", i, index[i],base_index, off);
-		bit_list[base_index]->set(off);
-	}
-}
-
-bitObj::~bitObj() {
-	for (unsigned int i = 0; i < bit_list.size(); i++) {
-		delete bit_list[i];
+		bit_list[base_index].set(off);
 	}
 }
 
 
 
-string bitObj::to_string() {
+
+string Bit_set_class::to_string() {
 	string str;
-	for (int i = (int)bit_list.size()-1; i >= 0; i--) {
+	for (const auto & i: bit_list) {
 		//Rprintf("%d:%s\n", i, bit_list[i]->to_string().c_str());
-		str.append(bit_list[i]->to_string());
+		str.append(i.to_string());
 	}
 	return str;
 }
 
 
-int bitObj::count() {
-	int result = 0;
-	for (unsigned int i = 0; i < bit_list.size(); i++) {
-		result += bit_list[i]->count();
+size_t Bit_set_class::count() {
+	size_t result = 0;
+	for (const auto & i: bit_list) {
+		result += i.count();
 	}
 	return result;
 
