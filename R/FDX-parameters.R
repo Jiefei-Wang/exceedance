@@ -79,14 +79,13 @@
 #' @return an exceedance_parameters object
 #' @export
 param_fast_GW<-function(statistic = c("kth_p",
-                                 "KS","HC","BJ"), param1=NULL,
-                   param2=NULL,range_type=c("index","proportion")){
+                                      "KS","HC","BJ"), 
+                        param1=NULL,
+                        param2=NULL,
+                        range_type=c("index","proportion")){
     statistic <- match.arg(statistic)
     range_type <- match.arg(range_type,c("index","proportion"))
-    postfix <- NULL
-    postfix_profile <- NULL
-    postfix_bound <- NULL
-    postfix_inference <- NULL
+    
     if(statistic%in%c("KS","HC","BJ")){
         if(range_type == "proportion"){
             stopifnot(length(param1)<=2)
@@ -98,30 +97,34 @@ param_fast_GW<-function(statistic = c("kth_p",
         }
         param1 <- sort(fill_range(range_type,param1))
         param2 <- sort(fill_range(range_type,param2))
-        postfix <- "order_general"
+        profile_func <- profile_fast_GW_order_general
+        bound_func <- bound_fast_GW_order_general
+        inference_func <- inference_general
     }else{
         if(is.null(param1)){
             range_type <- "index"
             param1 <- 1L
         }
         if(range_type=="index"){
-            postfix<-paste0(statistic,"_index")
-            postfix_inference <- postfix
+            profile_func <- profile_fast_GW_kth_p_index
+            bound_func <- bound_fast_GW_kth_p_index
+            inference_func <- inference_fast_GW_kth_p_index
         }else{
-            postfix<-paste0(statistic,"_proportion")
+            profile_func <- profile_fast_GW_kth_p_proportion
+            bound_func <- bound_fast_GW_kth_p_proportion
+            inference_func <- inference_general
         }
     }
     
-    parms <- list(method = "fast_GW",
-                  postfix = postfix,
-                  postfix_profile = postfix_profile,
-                  postfix_bound = postfix_bound,
-                  postfix_inference = postfix_inference,
-                  algorithm = statistic,
+    param <- .exceedance_parameter(method = "fast_GW",
+                  statistic = statistic,
                   param1 = param1,
                   param2 = param2,
-                  range_type=range_type)
-    .exceedance_parameters(parms)
+                  range_type=range_type,
+                  profile_func = profile_func,
+                  bound_func = bound_func,
+                  inference_func = inference_func)
+    param
 }
 
 #' General exceedance control using the GW method
@@ -189,13 +192,27 @@ param_fast_GW<-function(statistic = c("kth_p",
 #' 
 #' @return an exceedance_parameters object
 #' @export
-param_general_GW<-function(pvalue_func,algorithm = c("general","JW")){
+param_general_GW<-function(
+    pvalue_func,
+    algorithm = c("general","JW")){
     algorithm <- match.arg(algorithm)
-    parms <- list(method = "general_GW",
+    if(algorithm == "general"){
+        profile_func = profile_general_GW_general
+        bound_func = bound_general_GW_general
+    }else{
+        profile_func = profile_general_GW_JW
+        bound_func = bound_general_GW_JW
+    }
+    inference_func <- inference_general
+    
+    
+    param <- .exceedance_parameter(method = "general_GW",
                   pvalue_func = pvalue_func,
                   algorithm = algorithm,
-                  postfix = algorithm)
-    .exceedance_parameters(parms)
+                  profile_func = profile_func,
+                  bound_func = bound_func,
+                  inference_func = inference_func)
+    param
 }
 
 #' @export
@@ -208,10 +225,14 @@ param_combine<-function(...,param_list = NULL, alpha_weight = NULL){
     if(is.null(alpha_weight)){
         alpha_weight <- rep(1,length(test_params))
     }
-    parms <- list(method = "combine_GW",
+    param <- .exceedance_parameter(method = "combine_GW",
                   test_params = test_params,
                   algorithm = "combine_GW",
-                  alpha_weight=alpha_weight)
-    parms
+                  alpha_weight=alpha_weight,
+                  profile_func = profile_combine_GW,
+                  bound_func = bound_combine_GW,
+                  inference_func = inference_combine_GW
+                  )
+    param
 }
 

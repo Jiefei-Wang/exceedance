@@ -6,8 +6,8 @@
 \usage{
 GKSStat(
   x,
-  indexL = seq_along(x),
-  indexU = seq_along(x),
+  indexL = NULL,
+  indexU = NULL,
   statName = c("KS", "KS+", "KS-", "BJ", "BJ+", "BJ-", "HC", "HC+", "HC-"),
   pvalue = TRUE
 )

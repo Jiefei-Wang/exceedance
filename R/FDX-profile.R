@@ -1,7 +1,46 @@
+#' Profile the data
+#' 
+#' Preprocessing the data and collecting information before performing 
+#' the exceedance control. This step is developed for reducing the 
+#' computational burder only. It is not related to statistics.
+#' 
+#' @param x numeric, p-values from some tests
+#' (E.g T-test for high-thoughput gene data.), with each element representing a 
+#' hypothesis.
+#' @param param exceedance_parameters object
+#' 
+#' @inherit exceedance_inference examples
+#' @return an exceedance_profile object
+#' @export
+exceedance_profile<-function(x, param){
+    m <- length(x)
+    sx <- sort(x,index.return = TRUE)
+    x_rank <- rep(0,m)
+    x_rank[sx$ix] <- seq_len(m)
+    basic_info <- list(
+        m = m,
+        x = x,
+        x_sort = as.numeric(sx$x),
+        x_sort_index = sx$ix,
+        x_rank = x_rank
+    )
+    
+    profile <- param$profile_func(
+        x=x,
+        param = param,
+        profile= basic_info
+    )
+    
+    profiled_data <- .exceedance_profile(
+        param = param, profile = profile
+    )
+    profiled_data
+}
+
+
 #pvalue_func <- function(x)ks.test(x,punif)$p.value
-profile_general_GW_general<-function(x,params,profiled_data,...){
-    pvalue_func <- params$pvalue_func
-    profile <- profiled_data$profile
+profile_general_GW_general<-function(x,param,profile){
+    pvalue_func <- param$pvalue_func
     m <-length(x)
     x_sort <- profile$x_sort
     
@@ -24,7 +63,7 @@ profile_general_GW_general<-function(x,params,profiled_data,...){
             cur_index <- allsubsets[[i]]
             subsetx = x_sort[cur_index]
             cur_pvalue <- pvalue_func(subsetx)
-            ## for the sets that has larger pvalue than the current one
+            ## for the sets that has a larger pvalue than the current one
             ## check if the set is a super set of the current set
             ## If not, add the current set to the list
             index_higherP <- find_higherP_index(cur_pvalue,pvalues)
@@ -60,25 +99,23 @@ profile_general_GW_general<-function(x,params,profiled_data,...){
                       pvalues=pvalues,
                       S_key=S_key))
     
-    profiled_data$profile <- profile
-    profiled_data
+    profile
 }
 
 
-profile_general_GW_JW<-function(x,params,profiled_data,...){
+profile_general_GW_JW<-function(x,param,profile){
     cache <- list()
     cache$search_path <- new.env()
     cache$pvalues <- new.env()
     
-    profiled_data$profile$cache <- cache
-    profiled_data
+    profile$cache <- cache
+    profile
 }
 
 
 
-profile_fast_GW_kth_p_index <- function(x, params,profiled_data,...){
-    profile <- profiled_data$profile
-    k <- params$param1
+profile_fast_GW_kth_p_index <- function(x, param,profile){
+    k <- param$param1
     m <- profile$m
     x_sort <- profile$x_sort
     
@@ -89,18 +126,16 @@ profile_fast_GW_kth_p_index <- function(x, params,profiled_data,...){
     local_level <- pbeta(x_sort,k,m-seq_len(m)+1)
     max_alpha <- max(local_level[k:m])
     
-    profile<-c(profile,
+    profile <- c(profile,
                list(
                    local_level=local_level,
                    max_alpha=max_alpha
                ))
-    profiled_data$profile <- profile
-    profiled_data
+    profile
 }
 
-profile_fast_GW_kth_p_proportion <- function(x, params,profiled_data,...){
-    profile <- profiled_data$profile
-    k <- params$param1
+profile_fast_GW_kth_p_proportion <- function(x, param,profile){
+    k <- param$param1
     m <- profile$m
     x_sort <- profile$x_sort
     local_level <- pbeta(x_sort,k,m-seq_len(m)+1)
@@ -109,31 +144,27 @@ profile_fast_GW_kth_p_proportion <- function(x, params,profiled_data,...){
                list(
                    local_level=local_level
                ))
-    profiled_data$profile <- profile
-    profiled_data
+    profile
 }
 
 
 
 
 
-profile_fast_GW_order_general<-function(x,params,profiled_data,...){
-    range_type <- params$range_type
-    param1 <- params$param1
-    param2 <- params$param2
-    statistic <- params$algorithm
+profile_fast_GW_order_general<-function(x,param,profile){
+    range_type <- param$range_type
+    param1 <- param$param1
+    param2 <- param$param2
+    statistic <- param$algorithm
     
-    profiled_data$profile$params_key <- digest::digest(list(range_type,param1,param2,statistic))
-    profiled_data
+    profile$params_key <- digest::digest(list(range_type,param1,param2,statistic))
+    profile
 }
 
-profile_combine_GW<-function(x,params,profiled_data,...){
+profile_combine_GW<-function(x,params,profile){
     test_params <- params$test_params
-    # x_sort <- profiled_data$profile$x_sort
-    
-    profiles <- lapply(test_params,function(param)exceedance_profile(x=x,params=param,...))
-    profiled_data$profile$profiles <- profiles
-    profiled_data
+    profile$profiles <- lapply(test_params,function(param)exceedance_profile(x=x,params=param))
+    profile
 }
 
 

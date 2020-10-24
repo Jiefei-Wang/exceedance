@@ -16,7 +16,6 @@
 #' corresponding hypotheses are rejected, see details.
 #' @param rx numeric, the value of the pvalues which the 
 #' corresponding hypotheses are rejected, see details.
-#' @param ... not used
 #' 
 #' @details 
 #' This function is for constructing the confidence envolop of the
@@ -44,27 +43,21 @@
 #' @return a `1 - alpha` level confidence envolop
 #' @inherit exceedance_inference examples
 #' @export
-exceedance_bound<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL,...){
+exceedance_bound<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL){
     x_rank <- profiled_data$profile$x_rank
     sorted_i <- as.integer(get_ordered_index(x_rank,ri,sri,rx))
     
-    method <- profiled_data$params$method
-    if(!is.null(profiled_data$params$postfix_bound))
-        postfix <- profiled_data$params$postfix_bound
-    else
-        postfix <-profiled_data$params$postfix
-    
-    result <- call_func(root = "bound", postfix= c(method,postfix),
-                        profiled_data = profiled_data, alpha = alpha,
-                        ri=ri,sri =sri,rx=rx,sorted_i,...)
+    result <- profiled_data$param$bound_func(
+                        profiled_data = profiled_data, alpha = alpha, 
+                        sorted_i = sorted_i)
     result
     
 }
 
 bound_general_GW_general <- function(profiled_data,alpha,
-                                  sorted_i,...){
+                                  sorted_i){
     profile <- profiled_data$profile
-    params <- profiled_data$params
+    param <- profiled_data$param
     m <- profile$m
     S<- profile$S
     pvalues <- profile$pvalues
@@ -78,9 +71,6 @@ bound_general_GW_general <- function(profiled_data,alpha,
     if(length(U_index)==0){
         return(0)
     }
-    
-    
-    
     cur_key <- get_set_key(sorted_i,m)
     
     FP <- get_overlapped_num(S_key,U_index,cur_key)
@@ -90,10 +80,10 @@ bound_general_GW_general <- function(profiled_data,alpha,
 }
 
 bound_general_GW_JW <- function(profiled_data,alpha,
-                             sorted_i,...){
+                             sorted_i){
     profile <- profiled_data$profile
-    params <- profiled_data$params
-    pvalue_func <- params$pvalue_func
+    param <- profiled_data$param
+    pvalue_func <- param$pvalue_func
     m <- profile$m
     x_sort<- profile$x_sort
     cache <- profile$cache
@@ -135,11 +125,11 @@ bound_general_GW_JW <- function(profiled_data,alpha,
 
 ## Need optimization
 bound_fast_GW_kth_p_index <- function(profiled_data,alpha,
-                                   sorted_i,...){
+                                   sorted_i){
     profile <- profiled_data$profile
-    params <- profiled_data$params
+    param <- profiled_data$param
     max_alpha <- profile$max_alpha
-    k<- params$param1
+    k<- param$param1
     m <- profile$m
     local_level <- profile$local_level
     
@@ -162,11 +152,11 @@ bound_fast_GW_kth_p_index <- function(profiled_data,alpha,
 }
 
 bound_fast_GW_kth_p_proportion <- function(profiled_data,alpha,
-                                        sorted_i,...){
+                                        sorted_i){
     profile <- profiled_data$profile
-    params <- profiled_data$params
+    param <- profiled_data$param
     
-    q<- params$param1
+    q<- param$param1
     m <- profile$m
     x_sort <- profile$x_sort
     
@@ -208,13 +198,13 @@ bound_fast_GW_kth_p_proportion <- function(profiled_data,alpha,
 
 
 bound_fast_GW_order_general <- function(profiled_data,alpha,
-                                   sorted_i,...){
+                                   sorted_i){
     profile <- profiled_data$profile
-    params <- profiled_data$params
-    range_type <- params$range_type
-    param1 <- params$param1
-    param2 <- params$param2
-    statistic <- params$algorithm
+    param <- profiled_data$param
+    range_type <- param$range_type
+    param1 <- param$param1
+    param2 <- param$param2
+    statistic <- param$algorithm
     m <- profile$m
     x_sort<- profile$x_sort
     params_key <- profile$params_key
@@ -268,9 +258,9 @@ bound_fast_GW_order_general <- function(profiled_data,alpha,
 }
 
 bound_combine_GW <- function(profiled_data,alpha,
-                                   sorted_i,...){
+                                   sorted_i){
     profiles <- profiled_data$profile$profiles
-    alpha_weight <- profiled_data$params$alpha_weight
+    alpha_weight <- profiled_data$param$alpha_weight
     
     alphas <- alpha/sum(alpha_weight)*alpha_weight
     bounds <- lapply(seq_along(profiles), 

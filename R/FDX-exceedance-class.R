@@ -1,8 +1,12 @@
-.exceedance_parameters <- setClass("exceedance_parameters",contains = "list")
-.exceedance_profile <- setClass("exceedance_profile",contains = "list")
+.exceedance_parameter <- function(...){
+    structure(list(...), class = "exceedance_parameter")
+}
+.exceedance_profile <- function(...){
+    structure(list(...), class = "exceedance_profile")
+}
 
-title <-function(object){
-    is.null(object$title)||object$title
+title <-function(x){
+    is.null(x$title)||x$title
 }
 
 `title<-` <- function(x, value){
@@ -10,8 +14,8 @@ title <-function(object){
     x
 }
 
-
-truncated_print_internal <- function(x, len){
+truncated_print <- function(x, len = 5L){
+    
     x_len <- length(x)
     x_print_len <- min(x_len, len)
     x_diff <- x_len - x_print_len
@@ -21,7 +25,6 @@ truncated_print_internal <- function(x, len){
     }
     result
 }
-truncated_print <- function(x)truncated_print_internal(x,5L)
 
 show_method_name <- function(name){
     name["fast_GW"%in%name] <- "fast GW"
@@ -32,21 +35,22 @@ show_method_name <- function(name){
 
 
 #' @export
-setMethod("show", "exceedance_parameters",function(object){
-    method <- object$method
-    statistic <- object$statistic
+print.exceedance_parameter<-function(x,...){
+    if(title(x)){
+        cat("An S3 `exceedance_parameter` object:\n") 
+    }
+    method <- x$method
     if(method == "fast_GW"){
-        show_params_fast_GW(object)
+        show_params_fast_GW(x)
     }
     if(method == "general_GW"){
-        show_params_general_GW(object)
+        show_params_general_GW(x)
     }
     if(method == "combine_GW"){
-        show_params_combine_GW(object)
+        show_params_combine_GW(x)
     }
-    
-    invisible(NULL)
-})
+    invisible(x)
+}
 
 # parms <- list(method = "fast_GW",
 #               postfix = postfix,
@@ -58,12 +62,12 @@ setMethod("show", "exceedance_parameters",function(object){
 #               param2 = param2,
 #               range_type=range_type)
 
-show_params_fast_GW <- function(object){
-    param1 <- object$param1
-    param2 <- object$param2
-    algorithm <- object$algorithm
-    range_type <- object$range_type
-    method <- object$method
+show_params_fast_GW <- function(x){
+    param1 <- x$param1
+    param2 <- x$param2
+    statistc <- x$statistc
+    range_type <- x$range_type
+    method <- x$method
     
     
     if(is.null(param1))
@@ -71,38 +75,29 @@ show_params_fast_GW <- function(object){
     if(is.null(param2))
         param2 <- "NULL"
     
-    
-    if(title(object)){
-        cat("An S4 `exceedance_parameters` object:\n") 
-    }
     cat("Method:", show_method_name(method),"\n")
-    cat("Statistic:", algorithm,"\n")
+    cat("Statistic:", statistc,"\n")
     cat("param1:", truncated_print(param1), "\n")
     cat("param2:", truncated_print(param2), "\n")
     cat("range type:",range_type,"\n")
 }
 
-show_params_general_GW<-function(object){
-    algorithm <- object$algorithm
-    method <- object$method
+show_params_general_GW<-function(x){
+    algorithm <- x$algorithm
+    method <- x$method
     
-    if(title(object)){
-        cat("An S4 `exceedance_parameters` object:\n") 
-    }
     cat("Method:", show_method_name(method),"\n")
-    cat("algorithm:", algorithm,"\n")
+    cat("Algorithm:", algorithm,"\n")
 }
 
-show_params_combine_GW<-function(object){
-    weight <- object$alpha_weight
-    method <- object$method
-    test_params <- object$test_params
+show_params_combine_GW<-function(x){
+    weight <- x$alpha_weight
+    method <- x$method
+    test_params <- x$test_params
     test_methods <- vapply(test_params,function(x)show_method_name(x$method),character(1))
-    test_algorithms <- vapply(test_params,function(x)x$algorithm,character(1))
+    test_algorithms <- vapply(test_params,function(x)x$statistc,character(1))
     
-    if(title(object)){
-        cat("An S4 `exceedance_parameters` object:\n") 
-    }
+    
     cat("Method:", show_method_name(method),"\n")
     cat("Contained methods:", truncated_print(test_methods),"\n")
     cat("Contained algorithms:", truncated_print(test_algorithms),"\n")

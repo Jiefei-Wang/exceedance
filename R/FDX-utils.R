@@ -1,4 +1,7 @@
-
+#' @export
+use_cache <- function(x){
+    pkg_data$use_cache <- x
+}
 
 
 call_func <- function(root, prefix=NULL, postfix=NULL, ...){
@@ -40,4 +43,14 @@ combine_env <- function(e1, e2) {
         e[[v]] <- e1[[v]]
     }
     e
+}
+
+
+fill_range <- function(type , param){
+    if(length(param)==1){
+        if(type == "proportion"){
+            param <- c(0,param)
+        }
+    }
+    param
 }
