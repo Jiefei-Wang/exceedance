@@ -48,9 +48,9 @@ SEXP general_GW_construct_subset(Function pvalue_func, NumericVector x){
     std::multimap<double, Bit_set_class>* candidate_subset = new std::multimap<double, Bit_set_class>();
     R_xlen_t m = XLENGTH(x);
     NumericVector subset = NumericVector(m);
+    Bit_set_class subset_index(m);
     for(size_t curN =m-1;curN>=0;curN--){
         Subset_iterator iterator(m, curN);
-        Bit_set_class subset_index(curN);
         do{
             subset_index.set_bit(iterator.index);
             //Get the subset samples
