@@ -86,6 +86,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// compute_prob
+double compute_prob(R_xlen_t m, SEXP R_g_value, SEXP R_h_value, R_xlen_t n_t, SEXP R_diff_t);
+RcppExport SEXP _exceedance_compute_prob(SEXP mSEXP, SEXP R_g_valueSEXP, SEXP R_h_valueSEXP, SEXP n_tSEXP, SEXP R_diff_tSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< R_xlen_t >::type m(mSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_g_value(R_g_valueSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_h_value(R_h_valueSEXP);
+    Rcpp::traits::input_parameter< R_xlen_t >::type n_t(n_tSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_diff_t(R_diff_tSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_prob(m, R_g_value, R_h_value, n_t, R_diff_t));
+    return rcpp_result_gen;
+END_RCPP
+}
+// compute_prob_fft
+double compute_prob_fft(R_xlen_t m, SEXP R_g_value, SEXP R_h_value, R_xlen_t n_t, SEXP R_diff_t);
+RcppExport SEXP _exceedance_compute_prob_fft(SEXP mSEXP, SEXP R_g_valueSEXP, SEXP R_h_valueSEXP, SEXP n_tSEXP, SEXP R_diff_tSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< R_xlen_t >::type m(mSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_g_value(R_g_valueSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_h_value(R_h_valueSEXP);
+    Rcpp::traits::input_parameter< R_xlen_t >::type n_t(n_tSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type R_diff_t(R_diff_tSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_prob_fft(m, R_g_value, R_h_value, n_t, R_diff_t));
+    return rcpp_result_gen;
+END_RCPP
+}
 // C_get_range_by_bound
 SEXP C_get_range_by_bound(SEXP R_sx, SEXP R_l, SEXP R_h);
 RcppExport SEXP _exceedance_C_get_range_by_bound(SEXP R_sxSEXP, SEXP R_lSEXP, SEXP R_hSEXP) {
@@ -123,6 +153,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_exceedance_get_inter_number", (DL_FUNC) &_exceedance_get_inter_number, 2},
     {"_exceedance_get_list_inter_number", (DL_FUNC) &_exceedance_get_list_inter_number, 3},
     {"_exceedance_print_bit_list", (DL_FUNC) &_exceedance_print_bit_list, 1},
+    {"_exceedance_compute_prob", (DL_FUNC) &_exceedance_compute_prob, 5},
+    {"_exceedance_compute_prob_fft", (DL_FUNC) &_exceedance_compute_prob_fft, 5},
     {"_exceedance_C_get_range_by_bound", (DL_FUNC) &_exceedance_C_get_range_by_bound, 3},
     {"_exceedance_C_GW_compute_FDR", (DL_FUNC) &_exceedance_C_GW_compute_FDR, 5},
     {NULL, NULL, 0}

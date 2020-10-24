@@ -29,6 +29,14 @@ print_bit_list <- function(bit_list) {
     .Call(`_exceedance_print_bit_list`, bit_list)
 }
 
+compute_prob <- function(m, R_g_value, R_h_value, n_t, R_diff_t) {
+    .Call(`_exceedance_compute_prob`, m, R_g_value, R_h_value, n_t, R_diff_t)
+}
+
+compute_prob_fft <- function(m, R_g_value, R_h_value, n_t, R_diff_t) {
+    .Call(`_exceedance_compute_prob_fft`, m, R_g_value, R_h_value, n_t, R_diff_t)
+}
+
 C_get_range_by_bound <- function(R_sx, R_l, R_h) {
     .Call(`_exceedance_C_get_range_by_bound`, R_sx, R_l, R_h)
 }

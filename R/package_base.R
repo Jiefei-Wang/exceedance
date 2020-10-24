@@ -45,67 +45,6 @@ exceedance_profile<-function(x, params,...){
 
 
 
-## Reject: pvalue <= alpha
-## not reject: pvalue > alpha
-
-#' Computing the confidence envolop of the false discover proportion for the data
-#' 
-#' Computing the 1 - alpha level confidence envolop of the false discover 
-#' proportion(FDP) given a set of rejected hypotheses. 
-#' The confidence envolop can be viewed as a measurement of the quality of 
-#' the statistical inference.
-#' 
-#' @param profiled_data an exceedance_profile object
-#' @param alpha numeric, the confidence level
-#' @param ri integer, the index of the rejected hypotheses, see details.
-#' @param sri integer, the index of the ascending ordered p-values which the 
-#' corresponding hypotheses are rejected, see details.
-#' @param rx numeric, the value of the pvalues which the 
-#' corresponding hypotheses are rejected, see details.
-#' @param ... not used
-#' 
-#' @details 
-#' This function is for constructing the confidence envolop of the
-#' FDP given the set of rejected hypothese. The confidence envolop
-#' depends on three factors: 
-#' \itemize{
-#' \item The p-value samples
-#' \item The confidence level `alpha`
-#' \item The rejected hypotheses.
-#' }
-#' Therefore, given the data, confidence level and the hypotheses that you want
-#' to reject, we can obtain a `1 - alpha` confidence envolop of the FDP. 
-#' 
-#' The rejected hypotheses can be expressed in three ways. You can use the 
-#' original index `ri` to indicate which hypotheses you want to reject. For
-#' example, if `ri = 1:2`, it means the first and second hypotheses are rejected.
-#' 
-#' However, in practice, it is more common to reject the hypotheses which 
-#' have small pvalues. You can achieve it by providing the parameter `sri`. 
-#' For example, if `sri = 1:2`, it means the hypothese which have the smallest 
-#' or second smallest pvalues are rejected. Alternatively, `rx` can be used if
-#' you want to match the pvalues not the index. That is, a hypotheis is 
-#' rejected if its pvalue matches any value in `rx`.
-#' 
-#' @return a `1 - alpha` level confidence envolop
-#' @inherit exceedance_inference examples
-#' @export
-exceedance_bound<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL,...){
-    x_rank <- profiled_data$profile$x_rank
-    sorted_i <- as.integer(get_ordered_index(x_rank,ri,sri,rx))
-    
-    method <- profiled_data$params$method
-    if(!is.null(profiled_data$params$postfix_bound))
-        postfix <- profiled_data$params$postfix_bound
-    else
-        postfix <-profiled_data$params$postfix
-    
-    result <- call_func(root = "bound", postfix= c(method,postfix),
-                        profiled_data = profiled_data, alpha = alpha,
-                        ri=ri,sri =sri,rx=rx,sorted_i,...)
-    result
-    
-}
 
 
 

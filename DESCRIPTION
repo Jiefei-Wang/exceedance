@@ -9,7 +9,7 @@ Maintainer: Jiefei Wang <jwang96@buffalo.edu>
 Description: More about what it does (maybe more than one line)
 License: GPL-3
 SystemRequirements: C++11
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 LinkingTo: 
@@ -19,7 +19,9 @@ Imports:
     methods,
     stats,
     digest,
-    generalKSStat
+    generalKSStat,
+    synchronicity,
+    R.cache
 Suggests: 
     testthat,
     knitr,

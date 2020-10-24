@@ -1,8 +1,8 @@
-pkg_data <- list()
-pkg_data$criticals <- new.env()
 
-call_func <- function(root, postfix, ...){
-    func_name <- paste0(c(root,postfix),collapse="_")
+
+
+call_func <- function(root, prefix=NULL, postfix=NULL, ...){
+    func_name <- paste0(c(prefix,root,postfix),collapse="")
     do.call(func_name,args = list(...))
 }
 
@@ -29,3 +29,15 @@ is_subset<-function(key_list,list_index,key){
 }
 
 
+combine_env <- function(e1, e2) {
+    e1name = deparse(substitute(e1))
+    e2name = deparse(substitute(e2))
+    list1 = ls(e1)
+    list2 = ls(e2)
+    e <- as.environment(as.list(e2))
+    for(v in list1) {
+        if(v %in% list2) next
+        e[[v]] <- e1[[v]]
+    }
+    e
+}
