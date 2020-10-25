@@ -25,7 +25,8 @@
 #' @inherit GKSStat details
 #' @rdname critical
 #' @export
-GKSCritical <-function(alpha,n,
+GKSCritical <-function(n,alpha,
+                       index= NULL, 
                        indexL=NULL,indexU= NULL,
                        statName = c("KS","KS+","KS-","BJ","BJ+","BJ-","HC","HC+","HC-")){
     statName <- match.arg(statName)
@@ -33,14 +34,15 @@ GKSCritical <-function(alpha,n,
     stopifnot(!is.null(n))
     
     idx <- getGKSIndex(statName = statName, n = n, 
+                       index= index, 
                        indexL = indexL, indexU = indexU)
     indexL <- idx$indexL
     indexU <- idx$indexU
     statName <- idx$statName
     
     statValue <- call_func(root = "Critical",prefix = statName,
-                           alpha=alpha, 
                            n=n,
+                           alpha=alpha, 
                            indexL=indexL,
                            indexU=indexU)
     return(statValue)
@@ -48,8 +50,8 @@ GKSCritical <-function(alpha,n,
 
 
 genericCritical<-function(pvalueFunc, searchRange,
-                          alpha,n=NULL,
-                          indexL=NULL,indexU= NULL){
+                          n,alpha,
+                          indexL,indexU){
     rootFunc=function(stat) 
         vapply(stat, function(stat)
             pvalueFunc(stat=stat,n=n,indexL=indexL,indexU=indexU)-alpha,numeric(1))
@@ -58,26 +60,26 @@ genericCritical<-function(pvalueFunc, searchRange,
 }
 
 
-HCCritical<-function(alpha,n,indexL=seq_len(n),indexU=seq_len(n)){
+HCCritical<-function(n,alpha,indexL=seq_len(n),indexU=seq_len(n)){
     genericCritical(
         pvalueFunc= HCPvalue,searchRange=c(0,100),
-        alpha=alpha,n=n,
+        n=n,alpha=alpha,
         indexL=indexL,indexU= indexU
     )
 }
 
-BJCritical<-function(alpha,n,indexL=seq_len(n),indexU=seq_len(n)){
+BJCritical<-function(n,alpha,indexL=seq_len(n),indexU=seq_len(n)){
     genericCritical(
         pvalueFunc= BJPvalue,searchRange=c(0,1),
-        alpha=alpha,n=n,
+        n=n,alpha=alpha,
         indexL=indexL,indexU= indexU
     )
 }
 
-KSCritical<-function(alpha,n,indexL=seq_len(n),indexU=seq_len(n)){
+KSCritical<-function(n,alpha,indexL=seq_len(n),indexU=seq_len(n)){
     genericCritical(
         pvalueFunc= KSPvalue,searchRange=c(0,1),
-        alpha=alpha,n=n,
+        n=n,alpha=alpha,
         indexL=indexL,indexU= indexU
     )
 }

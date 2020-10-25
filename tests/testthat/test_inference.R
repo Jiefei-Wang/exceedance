@@ -4,7 +4,7 @@ sample_size <- 10
 
 ##############################
 ## statistic: k order
-## algorithm: general JW vs k order
+## algorithm: general JW vs fast
 ##############################
 k_test <-function(y,k){
     n <- length(y)
@@ -33,7 +33,7 @@ test_that("combined k order",{
         
         gammabar2 = c()
         for(j in seq_along(y)){
-            gammabar2[j] = exceedance_bound(profile2,alpha,sri = 1:j)
+            gammabar2[j] = exceedance_confidence(profile2,alpha,sri = 1:j)
         }
         ind <- which(gammabar2<=bound)
         if(length(ind)!=0){
@@ -46,6 +46,57 @@ test_that("combined k order",{
         expect_equal(result1,result3)
     }
 })
+##############################
+## statistic: BJ
+## algorithm: general JW vs fast
+##############################
+BJ_test <-function(y,k){
+    n <- length(y)
+    k_max <- k[length(k)]
+    if(length(y)<k_max){
+        k <- k[k<=length(y)]
+    }
+    if(length(k)!=0)
+        GKSStat(y,indexL=k,statName = "BJ")$pvalue
+    else 
+        1
+}
+test_that("combined k order",{
+    # set.seed(123)
+    for(i in 1:100){
+        alpha <- 0.05
+        bound <- 0.4
+        k <- c(2,4,6)
+        y<-rbeta(sample_size,1,10)
+        sy <- sort(y,index.return = TRUE)
+        
+        params1 <- param_general_GW(function(y)BJ_test(y,k),algorithm = "JW")
+        params2 <- param_fast_GW(statistic = "BJ",param1 = k,range_type = "index")
+        
+        profile1 <- exceedance_profile(y,params1)
+        profile2 <- exceedance_profile(y,params2)
+        
+        result1 <- exceedance_inference(profile1,alpha=alpha,bound=bound)
+        result2 <- exceedance_inference(profile2,alpha=alpha,bound=bound)
+        
+        gammabar2 = c()
+        for(j in seq_along(y)){
+            gammabar2[j] = exceedance_confidence(profile2,alpha,sri = 1:j)
+        }
+        ind <- which(gammabar2<=bound)
+        if(length(ind)!=0){
+            result3 <- sy$ix[seq_len(max(ind))]
+        }else{
+            result3 <- integer(0)
+        }
+        
+        expect_equal(result1,result2)
+        expect_equal(result1,result3)
+    }
+})
+
+
+
 ##############################
 ## statistic: combined k order
 ## algorithm: manually do k order vs combined

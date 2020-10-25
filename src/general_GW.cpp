@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <map>
 #include "bit_class.h"
+#include "utils.h"
 using namespace Rcpp;
 
 //Generate the subset index with a specific size for the samples 
@@ -21,7 +22,7 @@ class Subset_iterator{
               size_t i = subset_size - k -1;
               if(index[i]+1!=index[i+1]){
                   index[i] ++;
-                  for(size_t j=i+1;j<subset_size-1;j++){
+                  for(size_t j=i+1;j<subset_size;j++){
                     index[j] = index[j-1]+1;
                   }
                   return true;
@@ -44,19 +45,27 @@ void subset_obj_finalizer(SEXP x) {
 }
 
 // [[Rcpp::export]]
-SEXP general_GW_construct_subset(Function pvalue_func, NumericVector x){
+SEXP general_GW_construct_subset(SEXP pvalue_func, SEXP rho, NumericVector x){
     //This map stores p-value: index pair
     std::multimap<double, Bit_set_class>* candidate_subset = new std::multimap<double, Bit_set_class>();
+    PROTECT_GUARD guard;
+    SEXP R_ptr = guard.protect(R_MakeExternalPtr(candidate_subset, R_NilValue, R_NilValue));
+	R_RegisterCFinalizer(R_ptr, subset_obj_finalizer);
+
     R_xlen_t m = XLENGTH(x);
     NumericVector subset = NumericVector(m);
     Bit_set_class subset_index(m);
-    for(size_t curN =m-1;curN>0;curN--){
+    //This is the pvalue function that will be evaluated
+    SEXP call = guard.protect(Rf_lcons(pvalue_func, Rf_lcons(subset, R_NilValue)));
+    for(size_t curN =m;curN>0;curN--){
+        SETLENGTH(subset, curN);
         Subset_iterator iterator(m, curN);
         do{
             subset_index.set_bit(iterator.index);
             //Get the subset samples
             make_subset(x,subset,iterator.index);
-            double p_value = as<double>(pvalue_func(subset));
+            //double p_value = as<double>(pvalue_func(subset));
+            double p_value = as<double>(R_forceAndCall(call, 1, rho));
             /*
             For all the existing sets whose p-value is greater or equal than 
             the current p-value, we will check the subset relationship.
@@ -76,12 +85,24 @@ SEXP general_GW_construct_subset(Function pvalue_func, NumericVector x){
             }
         }while(iterator.next());
     }
-    SEXP R_ptr = Rf_protect(R_MakeExternalPtr(candidate_subset, R_NilValue, R_NilValue));
-	R_RegisterCFinalizer(R_ptr, subset_obj_finalizer);
-	Rf_unprotect(1);
     return R_ptr;
 }
 
+// [[Rcpp::export]]
+size_t general_GW_compute_FP(SEXP ptr, size_t m, NumericVector sorted_i,double alpha){
+    std::multimap<double, Bit_set_class>* candidate_subset = (std::multimap<double, Bit_set_class>*)R_ExternalPtrAddr(ptr);
+    Bit_set_class target_set(m);
+    for(auto& i: sorted_i){
+        target_set.set_bit(i-1);
+    }
+    size_t FP=0;
+    for(const auto& i: *candidate_subset){
+        if(i.first>alpha){
+            FP = std::max(FP, target_set.count_interception(i.second));
+        }
+    }
+    return FP;
+}
 
 // [[Rcpp::export]]
 void print_subset_list(SEXP x){

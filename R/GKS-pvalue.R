@@ -40,7 +40,8 @@
 #' @inherit GKSStat details
 #' @rdname pvalue
 #' @export
-GKSPvalue<-function(stat=NULL , n=NULL, alpha0 = NULL, 
+GKSPvalue<-function(stat=NULL , n=NULL, 
+                    index = NULL,
                     indexL=NULL,indexU=NULL,
                     x=NULL, statName = NULL){
     
@@ -56,7 +57,7 @@ GKSPvalue<-function(stat=NULL , n=NULL, alpha0 = NULL,
                               )
         if(!is.null(x)){
             stat <- GKSStat(x=x,alpha0=alpha0,
-                            indexL=indexL,indexU=indexU,
+                            index= index, indexL=indexL,indexU=indexU,
                             statName = statName)
             statValue <- getStatValue(stat)
         }else{
@@ -66,7 +67,7 @@ GKSPvalue<-function(stat=NULL , n=NULL, alpha0 = NULL,
     }
     stopifnot(!is.null(n))
     idx <- getGKSIndex(statName = statName, n = length(x), 
-                       indexL = indexL, indexU = indexU)
+                       index= index, indexL = indexL, indexU = indexU)
     indexL <- idx$indexL
     indexU <- idx$indexU
     statName <- idx$statName

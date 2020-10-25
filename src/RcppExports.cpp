@@ -7,14 +7,29 @@
 using namespace Rcpp;
 
 // general_GW_construct_subset
-SEXP general_GW_construct_subset(Function pvalue_func, NumericVector x);
-RcppExport SEXP _exceedance_general_GW_construct_subset(SEXP pvalue_funcSEXP, SEXP xSEXP) {
+SEXP general_GW_construct_subset(SEXP pvalue_func, SEXP rho, NumericVector x);
+RcppExport SEXP _exceedance_general_GW_construct_subset(SEXP pvalue_funcSEXP, SEXP rhoSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Function >::type pvalue_func(pvalue_funcSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type pvalue_func(pvalue_funcSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(general_GW_construct_subset(pvalue_func, x));
+    rcpp_result_gen = Rcpp::wrap(general_GW_construct_subset(pvalue_func, rho, x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// general_GW_compute_FP
+size_t general_GW_compute_FP(SEXP ptr, size_t m, NumericVector sorted_i, double alpha);
+RcppExport SEXP _exceedance_general_GW_compute_FP(SEXP ptrSEXP, SEXP mSEXP, SEXP sorted_iSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type ptr(ptrSEXP);
+    Rcpp::traits::input_parameter< size_t >::type m(mSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sorted_i(sorted_iSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(general_GW_compute_FP(ptr, m, sorted_i, alpha));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -88,7 +103,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_exceedance_general_GW_construct_subset", (DL_FUNC) &_exceedance_general_GW_construct_subset, 2},
+    {"_exceedance_general_GW_construct_subset", (DL_FUNC) &_exceedance_general_GW_construct_subset, 3},
+    {"_exceedance_general_GW_compute_FP", (DL_FUNC) &_exceedance_general_GW_compute_FP, 4},
     {"_exceedance_print_subset_list", (DL_FUNC) &_exceedance_print_subset_list, 1},
     {"_exceedance_compute_prob", (DL_FUNC) &_exceedance_compute_prob, 5},
     {"_exceedance_compute_prob_fft", (DL_FUNC) &_exceedance_compute_prob_fft, 5},

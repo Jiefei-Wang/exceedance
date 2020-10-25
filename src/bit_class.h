@@ -15,6 +15,7 @@ public:
 	bool contain(const Bit_set_class& another);
 	size_t count();
 	void set_bit(std::vector<size_t>& index);
+	void set_bit(size_t i);
 	std::string to_string();
 };
 

@@ -98,7 +98,7 @@ param_fast_GW<-function(statistic = c("kth_p",
         param1 <- sort(fill_range(range_type,param1))
         param2 <- sort(fill_range(range_type,param2))
         profile_func <- profile_fast_GW_order_general
-        bound_func <- bound_fast_GW_order_general
+        confidence_func <- confidence_fast_GW_order_general
         inference_func <- inference_general
     }else{
         if(is.null(param1)){
@@ -107,11 +107,11 @@ param_fast_GW<-function(statistic = c("kth_p",
         }
         if(range_type=="index"){
             profile_func <- profile_fast_GW_kth_p_index
-            bound_func <- bound_fast_GW_kth_p_index
+            confidence_func <- confidence_fast_GW_kth_p_index
             inference_func <- inference_fast_GW_kth_p_index
         }else{
             profile_func <- profile_fast_GW_kth_p_proportion
-            bound_func <- bound_fast_GW_kth_p_proportion
+            confidence_func <- confidence_fast_GW_kth_p_proportion
             inference_func <- inference_general
         }
     }
@@ -122,7 +122,7 @@ param_fast_GW<-function(statistic = c("kth_p",
                   param2 = param2,
                   range_type=range_type,
                   profile_func = profile_func,
-                  bound_func = bound_func,
+                  confidence_func = confidence_func,
                   inference_func = inference_func)
     param
 }
@@ -198,19 +198,19 @@ param_general_GW<-function(
     algorithm <- match.arg(algorithm)
     if(algorithm == "general"){
         profile_func = profile_general_GW_general
-        bound_func = bound_general_GW_general
+        confidence_func = confidence_general_GW_general
     }else{
         profile_func = profile_general_GW_JW
-        bound_func = bound_general_GW_JW
+        confidence_func = confidence_general_GW_JW
     }
     inference_func <- inference_general
     
     
     param <- .exceedance_parameter(method = "general_GW",
                   pvalue_func = pvalue_func,
-                  algorithm = algorithm,
+                  statistic = algorithm,
                   profile_func = profile_func,
-                  bound_func = bound_func,
+                  confidence_func = confidence_func,
                   inference_func = inference_func)
     param
 }
@@ -227,11 +227,11 @@ param_combine<-function(...,param_list = NULL, alpha_weight = NULL){
     }
     param <- .exceedance_parameter(method = "combine_GW",
                   test_params = test_params,
-                  algorithm = "combine_GW",
+                  statistic = "combine_GW",
                   alpha_weight=alpha_weight,
                   profile_func = profile_combine_GW,
-                  bound_func = bound_combine_GW,
-                  inference_func = inference_combine_GW
+                  confidence_func = confidence_combine_GW,
+                  inference_func = inference_general
                   )
     param
 }

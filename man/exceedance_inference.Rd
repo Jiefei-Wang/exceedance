@@ -38,15 +38,15 @@ profile <- profile_pvalue(x,param)
 alpha <- 0.05
 
 ## reject the first three hypotheses
-exceedance_bound(profile, alpha, ri = 3)
+exceedance_confidence(profile, alpha, ri = 3)
 
 ## reject the hypothese which pvalues are equal to
 ## the first three samples.
 ## In other word, this is equivalent to reject the first three hypotheses
-exceedance_bound(profile, alpha, rx = x[1:3])
+exceedance_confidence(profile, alpha, rx = x[1:3])
 
 ## reject the hypotheses which have the lowest 3 p-values
-exceedance_bound(profile, alpha, sri = 3)
+exceedance_confidence(profile, alpha, sri = 3)
 
 
 ## Determine which hypotheses can be rejected while controlling the

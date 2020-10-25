@@ -43,43 +43,30 @@
 #' @return a `1 - alpha` level confidence envolop
 #' @inherit exceedance_inference examples
 #' @export
-exceedance_bound<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL){
+exceedance_confidence<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL){
     x_rank <- profiled_data$profile$x_rank
     sorted_i <- as.integer(get_ordered_index(x_rank,ri,sri,rx))
     
-    result <- profiled_data$param$bound_func(
+    result <- profiled_data$param$confidence_func(
                         profiled_data = profiled_data, alpha = alpha, 
                         sorted_i = sorted_i)
     result
     
 }
 
-bound_general_GW_general <- function(profiled_data,alpha,
+confidence_general_GW_general <- function(profiled_data,alpha,
                                   sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
     m <- profile$m
-    S<- profile$S
-    pvalues <- profile$pvalues
-    S_key <- profile$S_key
+    unreject_set<- profile$unreject_set
     
-    ## Compute the unrejected set
-    U_index <- pvalues$i[pvalues$p>alpha]
-    
-    ## If there is no unrejected set
-    ## FRP = 0
-    if(length(U_index)==0){
-        return(0)
-    }
-    cur_key <- get_set_key(sorted_i,m)
-    
-    FP <- get_overlapped_num(S_key,U_index,cur_key)
-    
-    FDR <- max(FP)/length(sorted_i)
+    FP <- general_GW_compute_FP(unreject_set,m,sorted_i, alpha)
+    FDR <- FP/length(sorted_i)
     FDR
 }
 
-bound_general_GW_JW <- function(profiled_data,alpha,
+confidence_general_GW_JW <- function(profiled_data,alpha,
                              sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
@@ -124,7 +111,7 @@ bound_general_GW_JW <- function(profiled_data,alpha,
 
 
 ## Need optimization
-bound_fast_GW_kth_p_index <- function(profiled_data,alpha,
+confidence_fast_GW_kth_p_index <- function(profiled_data,alpha,
                                    sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
@@ -151,7 +138,7 @@ bound_fast_GW_kth_p_index <- function(profiled_data,alpha,
     FDR
 }
 
-bound_fast_GW_kth_p_proportion <- function(profiled_data,alpha,
+confidence_fast_GW_kth_p_proportion <- function(profiled_data,alpha,
                                         sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
@@ -196,15 +183,30 @@ bound_fast_GW_kth_p_proportion <- function(profiled_data,alpha,
     FP/length(sorted_i)
 }
 
+## Get critical value for BJ, KS, HC...
+## If the critical has been cached, we will get it from cache
+get_critical <- function(statName, n, alpha, indexL, indexU){
+    if(pkg_data$use_cache){
+        index_key <- digest::digest(list(indexL,indexU))
+        params_key <- paste0(statName, n, alpha, index_key)
+        if(exists(params_key,envir=pkg_data$criticals)){
+            critical <- pkg_data$criticals[[params_key]]
+            return(critical)
+        }
+    }
+    critical <- GKSCritical(n=n,alpha=alpha,indexL=indexL,indexU=indexU,statName=statName)
+    critical
+}
 
-bound_fast_GW_order_general <- function(profiled_data,alpha,
+
+confidence_fast_GW_order_general <- function(profiled_data,alpha,
                                    sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
     range_type <- param$range_type
     param1 <- param$param1
     param2 <- param$param2
-    statistic <- param$algorithm
+    statistic <- param$statistic
     m <- profile$m
     x_sort<- profile$x_sort
     params_key <- profile$params_key
@@ -217,8 +219,8 @@ bound_fast_GW_order_general <- function(profiled_data,alpha,
     for(n in rev(seq_len(m))){
         # message(n)
         if(range_type=="proportion"){
-            index1 <- get_index_from_proportion(n=n,param=param1)
-            index2 <- get_index_from_proportion(n=n,param=param2)
+            indexL <- get_index_from_proportion(n=n,param=param1)
+            indexU <- get_index_from_proportion(n=n,param=param2)
         }else{
             param1 <- param1[param1<=n]
             param2 <- param2[param2<=n]
@@ -228,20 +230,14 @@ bound_fast_GW_order_general <- function(profiled_data,alpha,
                 FDR <- max(FDR, min(n,rj_num) / rj_num)
                 next
             }
-            index1 <- param1
-            index2 <- param2
+            indexL <- param1
+            indexU <- param2
         }
-        ## generic bound
-        critical_key <- paste0(preprocessed_key,n)
-        if(exists(critical_key,envir=pkg_data$criticals)&&pkg_data$use_cache){
-            bound <- pkg_data$criticals[[critical_key]]
-        }else{
-            bound <- get_local_critical(stat = statistic, n=n, alpha=alpha,
-                                        indexL=index1,indexU=index2)
-            ## This is the true bound
-            bound <- process_local_critical(bound,indexL=index1,indexU=index2)
-            pkg_data$criticals[[critical_key]] <- bound
-        }
+        
+        critical <- get_critical(statName= statistic, n=n, alpha=alpha, 
+                                 indexL=indexL, indexU=indexU)
+        bound <- get_local_critical(statName = statistic, n= n, critical=critical,
+                           indexL=indexL,indexU=indexU)
         
         # x_range <- get_range_by_bound(sx=x_sort,bound=bound)
         x_range <- C_get_range_by_bound(R_sx=x_sort,R_l=bound$l,R_h=bound$h)
@@ -257,18 +253,18 @@ bound_fast_GW_order_general <- function(profiled_data,alpha,
     FDR
 }
 
-bound_combine_GW <- function(profiled_data,alpha,
+confidence_combine_GW <- function(profiled_data,alpha,
                                    sorted_i){
     profiles <- profiled_data$profile$profiles
     alpha_weight <- profiled_data$param$alpha_weight
     
     alphas <- alpha/sum(alpha_weight)*alpha_weight
-    bounds <- lapply(seq_along(profiles), 
+    confidences <- lapply(seq_along(profiles), 
            function(i,profiles,alphas)
-               exceedance_bound(profiled_data=profiles[[i]],
+               exceedance_confidence(profiled_data=profiles[[i]],
                                 alpha=alphas[i],
                                 sri = sorted_i),
            profiles=profiles,
            alphas=alphas)
-    min(as.numeric(bounds))
+    min(as.numeric(confidences))
 }

@@ -73,12 +73,12 @@
 #' @rdname statistics
 #' @export
 GKSStat <- function(
-    x, indexL = NULL, indexU = NULL,
+    x, index = NULL, indexL = NULL, indexU = NULL,
     statName = c("KS","KS+","KS-","BJ","BJ+","BJ-","HC","HC+","HC-"),
     pvalue = TRUE){
     statName <- match.arg(statName)
     idx <- getGKSIndex(statName = statName, n = length(x), 
-                       indexL = indexL, indexU = indexU)
+                       index = index, indexL = indexL, indexU = indexU)
     indexL <- idx$indexL
     indexU <- idx$indexU
     statName <- idx$statName

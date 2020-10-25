@@ -10,7 +10,7 @@
 #' of total rejections. Small FDP with large number of reject is favorable 
 #' in practice.
 #' 
-#' @inheritParams exceedance_bound
+#' @inheritParams exceedance_confidence
 #' @param bound The upper bound of the false discover proportion
 #' @examples 
 #' ## The 3rd pvalue statistic
@@ -27,15 +27,15 @@
 #' alpha <- 0.05
 #' 
 #' ## reject the first three hypotheses
-#' exceedance_bound(profile, alpha, ri = 3)
+#' exceedance_confidence(profile, alpha, ri = 3)
 #' 
 #' ## reject the hypothese which pvalues are equal to
 #' ## the first three samples.
 #' ## In other word, this is equivalent to reject the first three hypotheses
-#' exceedance_bound(profile, alpha, rx = x[1:3])
+#' exceedance_confidence(profile, alpha, rx = x[1:3])
 #' 
 #' ## reject the hypotheses which have the lowest 3 p-values
-#' exceedance_bound(profile, alpha, sri = 3)
+#' exceedance_confidence(profile, alpha, sri = 3)
 #' 
 #' 
 #' ## Determine which hypotheses can be rejected while controlling the
@@ -47,7 +47,7 @@
 #' @return Indices of the hypotheses that are rejected in the procedure.
 #' @export
 exceedance_inference<-function(profiled_data, alpha, bound){
-    result <- profiled_data$param$inferenc_func(
+    result <- profiled_data$param$inference_func(
         profiled_data = profiled_data, alpha = alpha,
         bound=bound)
     result
@@ -61,7 +61,7 @@ inference_general<-function(profiled_data, alpha, bound){
     
     reject <- integer(0)
     for(j in rev(seq_len(m))){
-        gammabar = exceedance_bound(profiled_data,alpha,sri = 1L:j)
+        gammabar = exceedance_confidence(profiled_data,alpha,sri = 1L:j)
         if(gammabar<=bound){
             reject<-1L:j
             break

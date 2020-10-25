@@ -83,11 +83,11 @@ show_params_fast_GW <- function(x){
 }
 
 show_params_general_GW<-function(x){
-    algorithm <- x$algorithm
+    statistic <- x$statistic
     method <- x$method
     
     cat("Method:", show_method_name(method),"\n")
-    cat("Algorithm:", algorithm,"\n")
+    cat("Algorithm:", statistic,"\n")
 }
 
 show_params_combine_GW<-function(x){
