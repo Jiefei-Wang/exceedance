@@ -4,8 +4,15 @@
 NULL
 
 pkg_data <- new.env()
-pkg_data$criticals <- new.env()
+pkg_data$criticals <- NULL
 pkg_data$use_cache <- TRUE
+
+load_criticals <- function(){
+    if(is.null(pkg_data$criticals)){
+        pkg_data$criticals <- package_cached_critical
+    }
+}
+
 
 packageCacheName <- "exceedance_critical"
 .onLoad <- function(libname, pkgname){

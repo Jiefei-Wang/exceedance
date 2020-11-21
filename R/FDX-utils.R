@@ -46,11 +46,3 @@ combine_env <- function(e1, e2) {
 }
 
 
-fill_range <- function(type , param){
-    if(length(param)==1){
-        if(type == "proportion"){
-            param <- c(0,param)
-        }
-    }
-    param
-}

@@ -48,14 +48,14 @@ exceedance_confidence<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL)
     sorted_i <- as.integer(get_ordered_index(x_rank,ri,sri,rx))
     
     result <- profiled_data$param$confidence_func(
-                        profiled_data = profiled_data, alpha = alpha, 
-                        sorted_i = sorted_i)
+        profiled_data = profiled_data, alpha = alpha, 
+        sorted_i = sorted_i)
     result
     
 }
 
 confidence_general_GW_general <- function(profiled_data,alpha,
-                                  sorted_i){
+                                          sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
     m <- profile$m
@@ -67,7 +67,7 @@ confidence_general_GW_general <- function(profiled_data,alpha,
 }
 
 confidence_general_GW_JW <- function(profiled_data,alpha,
-                             sorted_i){
+                                     sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
     pvalue_func <- param$pvalue_func
@@ -112,7 +112,7 @@ confidence_general_GW_JW <- function(profiled_data,alpha,
 
 ## Need optimization
 confidence_fast_GW_kth_p_index <- function(profiled_data,alpha,
-                                   sorted_i){
+                                           sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
     max_alpha <- profile$max_alpha
@@ -139,7 +139,7 @@ confidence_fast_GW_kth_p_index <- function(profiled_data,alpha,
 }
 
 confidence_fast_GW_kth_p_proportion <- function(profiled_data,alpha,
-                                        sorted_i){
+                                                sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
     
@@ -183,24 +183,14 @@ confidence_fast_GW_kth_p_proportion <- function(profiled_data,alpha,
     FP/length(sorted_i)
 }
 
-## Get critical value for BJ, KS, HC...
-## If the critical has been cached, we will get it from cache
-get_critical <- function(statName, n, alpha, indexL, indexU){
-    if(pkg_data$use_cache){
-        index_key <- digest::digest(list(indexL,indexU))
-        params_key <- paste0(statName, n, alpha, index_key)
-        if(exists(params_key,envir=pkg_data$criticals)){
-            critical <- pkg_data$criticals[[params_key]]
-            return(critical)
-        }
-    }
-    critical <- GKSCritical(n=n,alpha=alpha,indexL=indexL,indexU=indexU,statName=statName)
-    critical
-}
+
+
+
+
 
 
 confidence_fast_GW_order_general <- function(profiled_data,alpha,
-                                   sorted_i){
+                                             sorted_i){
     profile <- profiled_data$profile
     param <- profiled_data$param
     range_type <- param$range_type
@@ -210,9 +200,9 @@ confidence_fast_GW_order_general <- function(profiled_data,alpha,
     m <- profile$m
     x_sort<- profile$x_sort
     params_key <- profile$params_key
-
-    preprocessed_key <- paste0("GW",alpha,params_key)
     
+    preprocessed_key <- paste0("GW",alpha,params_key)
+    # browser()
     rj_num <- length(sorted_i)
     ## reduce the loop number by checking the current FDR
     FDR <- 0
@@ -222,49 +212,47 @@ confidence_fast_GW_order_general <- function(profiled_data,alpha,
             indexL <- get_index_from_proportion(n=n,param=param1)
             indexU <- get_index_from_proportion(n=n,param=param2)
         }else{
-            param1 <- param1[param1<=n]
-            param2 <- param2[param2<=n]
+            indexL <- param1[param1<=n]
+            indexU <- param2[param2<=n]
             ## Check if the current sample size satiefies
             ## The minimum requirement of the test.
-            if(length(param1)==0&&length(param2)==0){
+            if(length(indexL)==0&&length(indexU)==0){
                 FDR <- max(FDR, min(n,rj_num) / rj_num)
                 next
             }
-            indexL <- param1
-            indexU <- param2
         }
         
         critical <- get_critical(statName= statistic, n=n, alpha=alpha, 
                                  indexL=indexL, indexU=indexU)
         bound <- get_local_critical(statName = statistic, n= n, critical=critical,
-                           indexL=indexL,indexU=indexU)
+                                    indexL=indexL,indexU=indexU)
         
         # x_range <- get_range_by_bound(sx=x_sort,bound=bound)
         x_range <- C_get_range_by_bound(R_sx=x_sort,R_l=bound$l,R_h=bound$h)
         if(is.null(x_range)){
             next
         }
-        L <- x_range$L
-        H <- x_range$H
-        
-        FDR <- max(FDR,C_GW_compute_FDR(sorted_i,H,L,rj_num,n))
+        P <- x_range$P
+        Q <- x_range$Q
+        # browser()
+        FDR <- max(FDR,C_GW_compute_FDR(sorted_i,P,Q,rj_num,n))
         
     }
     FDR
 }
 
 confidence_combine_GW <- function(profiled_data,alpha,
-                                   sorted_i){
+                                  sorted_i){
     profiles <- profiled_data$profile$profiles
     alpha_weight <- profiled_data$param$alpha_weight
     
     alphas <- alpha/sum(alpha_weight)*alpha_weight
     confidences <- lapply(seq_along(profiles), 
-           function(i,profiles,alphas)
-               exceedance_confidence(profiled_data=profiles[[i]],
-                                alpha=alphas[i],
-                                sri = sorted_i),
-           profiles=profiles,
-           alphas=alphas)
+                          function(i,profiles,alphas)
+                              exceedance_confidence(profiled_data=profiles[[i]],
+                                                    alpha=alphas[i],
+                                                    sri = sorted_i),
+                          profiles=profiles,
+                          alphas=alphas)
     min(as.numeric(confidences))
 }

@@ -79,7 +79,7 @@
 #' @return an exceedance_parameters object
 #' @export
 param_fast_GW<-function(statistic = c("kth_p",
-                                      "KS","HC","BJ"), 
+                                      "KS","HC","BJ","Simes"), 
                         param1=NULL,
                         param2=NULL,
                         range_type=c("index","proportion")){
@@ -90,20 +90,31 @@ param_fast_GW<-function(statistic = c("kth_p",
         if(range_type == "proportion"){
             stopifnot(length(param1)<=2)
             stopifnot(length(param1)<=2)
+            if(length(param1)==1){
+                param1 <- c(0,param1)
+            }
+            if(length(param2)==1){
+                param2 <- c(0,param2)
+            }
         }
         if(is.null(param1)&&is.null(param2)){
             param1 <- c(0,1)
+            param2 <- c(0,1)
             range_type <- "proportion"
         }
-        param1 <- sort(fill_range(range_type,param1))
-        param2 <- sort(fill_range(range_type,param2))
+        param1 <- sort(param1)
+        param2 <- sort(param2)
         profile_func <- profile_fast_GW_order_general
         confidence_func <- confidence_fast_GW_order_general
-        inference_func <- inference_general
-    }else{
+        inference_func <- inference_fast_GW_order_general
+    }
+    if(statistic =="kth_p"){
         if(is.null(param1)){
             range_type <- "index"
             param1 <- 1L
+        }else{
+            stopifnot(length(param1)==1)
+            stopifnot(is.null(param2))
         }
         if(range_type=="index"){
             profile_func <- profile_fast_GW_kth_p_index
@@ -115,7 +126,14 @@ param_fast_GW<-function(statistic = c("kth_p",
             inference_func <- inference_general
         }
     }
-    
+    if(statistic =="Simes"){
+        param1 <- c(0,1)
+        param2 <- c(0,1)
+        range_type <- "proportion"
+        profile_func <- profile_fast_GW_order_general
+        confidence_func <- confidence_fast_GW_order_general
+        inference_func <- inference_fast_GW_order_general
+    }
     param <- .exceedance_parameter(method = "fast_GW",
                   statistic = statistic,
                   param1 = param1,

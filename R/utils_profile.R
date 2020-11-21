@@ -88,6 +88,38 @@ get_index_from_proportion<-function(n,param){
     param[param==0] <- 1
     seq_len(param[2]-param[1]+1) + param[1] -1
 }
+get_cache_key <- function(statName, n, alpha, indexL, indexU){
+    index_key <- digest::digest(list(indexL,indexU))
+    cache_key <- paste0(statName, n, alpha, index_key)
+    cache_key
+}
+exist_cache_value <- function(cache_key){
+    load_criticals()
+    exists(cache_key,envir=pkg_data$criticals)
+}
+get_cache_value <- function(cache_key){
+    load_criticals()
+    pkg_data$criticals[[cache_key]]
+}
+set_cache_value <- function(cache_key, value){
+    load_criticals()
+    pkg_data$criticals[[cache_key]] <- value
+}
+
+## Get critical value for BJ, KS, HC...
+## If the critical has been cached, we will get it from cache
+get_critical <- function(statName, n, alpha, indexL, indexU){
+    cache_key <- get_cache_key(statName = statName, n=n, 
+                               alpha=alpha, indexL=indexL, indexU=indexU)
+    if(pkg_data$use_cache&&exist_cache_value(cache_key)){
+        critical <- get_cache_value(cache_key)
+    }else{
+        critical <- GKSCritical(n=n,alpha=alpha,indexL=indexL,indexU=indexU,statName=statName)
+        set_cache_value(cache_key, critical)
+    }
+    critical
+}
+
 
 get_local_critical <-function(statName, n, critical, indexL,indexU){
     level <- do.call(paste0(statName,"LocalCritical"),args = list(

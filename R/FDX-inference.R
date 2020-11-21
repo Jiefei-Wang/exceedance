@@ -89,3 +89,66 @@ inference_fast_GW_kth_p_index<-function(profiled_data, alpha, bound){
     
     inference_general(profiled_data, alpha, bound)
 }
+
+
+## Given the samples and subset size n, compute
+## the CI for all possible rejection sets
+## R is a list of reject sets
+get_fast_GW_subset_all_FDX <- function(statName, sx, n, indexL, indexU, alpha){
+    m <- length(sx)
+    FDP <- rep(0, m)
+    critical <- get_critical(statName= statName, n=n, alpha=alpha, 
+                             indexL=indexL, indexU=indexU)
+    bound <- get_local_critical(statName = statName, n= n, critical=critical,
+                                indexL=indexL,indexU=indexU)
+    
+    # x_range <- get_range_by_bound(sx=x_sort,bound=bound)
+    x_range <- C_get_range_by_bound2(R_sx=sx,R_l=bound$l,R_h=bound$h)
+    if(!is.null(x_range)){
+        P <- x_range$P
+        for(i in seq_len(m)){
+            FDP[i] <- sum(P<=i)/i
+        }
+    }
+    FDP
+}
+
+
+inference_fast_GW_order_general<-function(profiled_data, alpha, bound){
+    profile <- profiled_data$profile
+    param <- profiled_data$param
+    range_type <- param$range_type
+    param1 <- param$param1
+    param2 <- param$param2
+    m <- profile$m
+    x_sort_index <- profile$x_sort_index
+    x_sort<- profile$x_sort
+    statistic <- param$statistic
+    
+    FDR <- rep(0, m)
+    for(n in seq_len(m)){
+        if(range_type=="proportion"){
+            indexL <- get_index_from_proportion(n=n,param=param1)
+            indexU <- get_index_from_proportion(n=n,param=param2)
+        }else{
+            indexL <- param1[param1<=n]
+            indexU <- param2[param2<=n]
+            ## Check if the current sample size satiefies
+            ## The minimum requirement of the test.
+            if(length(indexL)==0&&length(indexU)==0){
+                FDR <- pmax(FDR, pmin(n,seq_len(m)) / seq_len(m))
+                next
+            }
+        }
+        cur_FDR <- get_fast_GW_subset_all_FDX(statName = statistic, sx = x_sort, n=n,
+                                             indexL = indexL, indexU = indexU, alpha = alpha)
+        FDR <- pmax(FDR, cur_FDR)
+    }
+    idx <- which(FDR<=bound)
+    if(length(idx)!=0){
+        x_sort_index[seq_len(max(idx))]
+    }else{
+        integer(0)
+    }
+}
+

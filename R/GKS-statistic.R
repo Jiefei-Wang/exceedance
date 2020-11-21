@@ -74,7 +74,7 @@
 #' @export
 GKSStat <- function(
     x, index = NULL, indexL = NULL, indexU = NULL,
-    statName = c("KS","KS+","KS-","BJ","BJ+","BJ-","HC","HC+","HC-"),
+    statName = c("KS","KS+","KS-","BJ","BJ+","BJ-","HC","HC+","HC-","Simes"),
     pvalue = TRUE){
     statName <- match.arg(statName)
     idx <- getGKSIndex(statName = statName, n = length(x), 
@@ -157,5 +157,7 @@ KSStat<-function(x,indexL=NULL,indexU=NULL){
                      indexU = indexU
     )
 }
-
+SimesStat<-function(x,indexL=NULL,indexU=NULL){
+    min(sort(x)*length(x)/seq_along(x))
+}
 

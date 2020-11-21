@@ -28,7 +28,7 @@
 GKSCritical <-function(n,alpha,
                        index= NULL, 
                        indexL=NULL,indexU= NULL,
-                       statName = c("KS","KS+","KS-","BJ","BJ+","BJ-","HC","HC+","HC-")){
+                       statName = c("KS","KS+","KS-","BJ","BJ+","BJ-","HC","HC+","HC-","Simes")){
     statName <- match.arg(statName)
     stopifnot(!is.null(alpha))
     stopifnot(!is.null(n))
@@ -82,4 +82,8 @@ KSCritical<-function(n,alpha,indexL=seq_len(n),indexU=seq_len(n)){
         n=n,alpha=alpha,
         indexL=indexL,indexU= indexU
     )
+}
+
+SimesCritical<-function(n,alpha,indexL=seq_len(n),indexU=seq_len(n)){
+    alpha
 }

@@ -53,20 +53,23 @@ GKSPvalue<-function(stat=NULL , n=NULL,
         indexU <- stat$indexU
     }else{
         statName <- match.arg(statName,
-                              c("KS","KS+","KS-","BJ","BJ+","BJ-","HC","HC+","HC-")
+                              c("KS","KS+","KS-","BJ","BJ+","BJ-",
+                                "HC","HC+","HC-","Simes")
                               )
         if(!is.null(x)){
-            stat <- GKSStat(x=x,alpha0=alpha0,
+            n <- length(x)
+            stat <- GKSStat(x=x,
                             index= index, indexL=indexL,indexU=indexU,
-                            statName = statName)
+                            statName = statName, pvalue = FALSE)
             statValue <- getStatValue(stat)
         }else{
+            stopifnot(!is.null(n))
             statValue <- stat
         }
         
     }
     stopifnot(!is.null(n))
-    idx <- getGKSIndex(statName = statName, n = length(x), 
+    idx <- getGKSIndex(statName = statName, n = n, 
                        index= index, indexL = indexL, indexU = indexU)
     indexL <- idx$indexL
     indexU <- idx$indexU
@@ -98,8 +101,6 @@ uniformProbability<-function(LocalCriticalFunc,statValue ,n,indexL,indexU){
 }
 
 
-
-
 HCPvalue<-function(statValue,n,indexL=seq_len(n),indexU=seq_len(n)){
     1-uniformProbability(LocalCriticalFunc=HCLocalCritical,
                         statValue=statValue,n=n,indexL=indexL,indexU =indexU)
@@ -114,4 +115,7 @@ BJPvalue<-function(statValue,n,indexL=seq_len(n),indexU=seq_len(n)){
 KSPvalue<-function(statValue,n,indexL=seq_len(n),indexU=seq_len(n)){
     1-uniformProbability(LocalCriticalFunc=KSLocalCritical,
                         statValue=statValue,n=n,indexL=indexL,indexU =indexU)
+}
+SimesPvalue<-function(statValue,n,indexL=seq_len(n),indexU=seq_len(n)){
+    statValue
 }

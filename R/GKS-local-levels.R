@@ -60,4 +60,9 @@ KSLocalCritical<-function(statValue,n){
     h[h>1]=1
     list(l =l,h= h)
 }
+SimesLocalCritical<-function(statValue,n){
+    l <- statValue/n*seq_len(n)
+    h <- rep(1, n)
+    list(l =l,h= h)
+}
 
