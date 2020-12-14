@@ -96,14 +96,17 @@ param_fast_GW<-function(statistic = c("kth_p",
             if(length(param2)==1){
                 param2 <- c(0,param2)
             }
+        }else{
+            if(!is.null(param1))
+                param1 <- as.integer(sort(param1))
+            if(!is.null(param2))
+                param2 <- as.integer(sort(param2))
         }
         if(is.null(param1)&&is.null(param2)){
             param1 <- c(0,1)
             param2 <- c(0,1)
             range_type <- "proportion"
         }
-        param1 <- sort(param1)
-        param2 <- sort(param2)
         profile_func <- profile_fast_GW_order_general
         confidence_func <- confidence_fast_GW_order_general
         inference_func <- inference_fast_GW_order_general

@@ -86,7 +86,7 @@ get_index_from_proportion<-function(n,param){
     if(is.null(param)) return(param)
     param <- ceiling(param*n)
     param[param==0] <- 1
-    seq_len(param[2]-param[1]+1) + param[1] -1
+    seq_len(param[2]-param[1]+1) + as.integer(param[1] -1L)
 }
 get_cache_key <- function(statName, n, alpha, indexL, indexU){
     index_key <- digest::digest(list(indexL,indexU))

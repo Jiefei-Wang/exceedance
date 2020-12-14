@@ -214,7 +214,7 @@ confidence_fast_GW_order_general <- function(profiled_data,alpha,
         }else{
             indexL <- param1[param1<=n]
             indexU <- param2[param2<=n]
-            ## Check if the current sample size satiefies
+            ## Check if the current sample size satisfies
             ## The minimum requirement of the test.
             if(length(indexL)==0&&length(indexU)==0){
                 FDR <- max(FDR, min(n,rj_num) / rj_num)
