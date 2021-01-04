@@ -33,13 +33,17 @@ is_subset<-function(key_list,list_index,key){
 
 
 combine_env <- function(e1, e2) {
-    e1name = deparse(substitute(e1))
-    e2name = deparse(substitute(e2))
     list1 = ls(e1)
     list2 = ls(e2)
     e <- as.environment(as.list(e2))
     for(v in list1) {
-        if(v %in% list2) next
+        if(v %in% list2) {
+            if(e1[[v]]==e2[[v]]){
+                next
+            }else{
+                stop(paste0("data does not match: ",v))
+            }
+        }
         e[[v]] <- e1[[v]]
     }
     e

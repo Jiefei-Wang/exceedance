@@ -47,8 +47,8 @@ orderedProb <- function(l,h){
         if(h[j] > h[j+1]) h[j] <- h[j+1]
     }
     
-    # prob <- KSgeneral:::compute_noncrossing_prob(h,l)
-    # return(prob)
+    prob <- KSgeneral:::compute_noncrossing_prob(h,l)
+    return(prob)
     
     total <- sort(c(0,l,h,1))
     #g(t_i)

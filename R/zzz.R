@@ -13,10 +13,8 @@ load_criticals <- function(){
     }
 }
 
-
-packageCacheName <- "exceedance_critical"
 .onLoad <- function(libname, pkgname){
-    # pkg_data$criticals <- R.cache::loadCache(key = list(packageCacheName))
+    load_criticals()
 }
 
 .onUnload <- function(libpath){
