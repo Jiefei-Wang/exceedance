@@ -5,7 +5,7 @@
 \title{Fast Exceedance control using the GW method}
 \usage{
 param_fast_GW(
-  statistic = c("kth_p", "KS", "HC", "BJ"),
+  statistic = c("kth_p", "KS", "HC", "BJ", "Simes"),
   param1 = NULL,
   param2 = NULL,
   range_type = c("index", "proportion")

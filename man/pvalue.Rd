@@ -7,7 +7,7 @@
 GKSPvalue(
   stat = NULL,
   n = NULL,
-  alpha0 = NULL,
+  index = NULL,
   indexL = NULL,
   indexU = NULL,
   x = NULL,
@@ -24,8 +24,8 @@ specify the sample size \code{n}.}
 
 \item{n}{Integer, the sample size of the data.}
 
-\item{alpha0}{Numeric, controlling which ordered samples will be used in the
-statistics, the default value is \code{1}. see details.}
+\item{index}{Integer, controlling which ordered samples will be used in the
+statistics, see details.}
 
 \item{indexL}{Integer, controlling which ordered samples will be used in the
 statistics, see details.}

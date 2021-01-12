@@ -5,18 +5,22 @@
 \title{Compute the critical value of generalized Kolmogorov-Smirnov test statistics}
 \usage{
 GKSCritical(
-  alpha,
   n,
+  alpha,
+  index = NULL,
   indexL = NULL,
   indexU = NULL,
-  statName = c("KS", "KS+", "KS-", "BJ", "BJ+", "BJ-", "HC", "HC+", "HC-")
+  statName = c("KS", "KS+", "KS-", "BJ", "BJ+", "BJ-", "HC", "HC+", "HC-", "Simes")
 )
 }
 \arguments{
+\item{n}{Integer, the sample size of the data.}
+
 \item{alpha}{numeric, the type I error rate for the critical value. Please do
 not be confused with \code{alpha0}.}
 
-\item{n}{Integer, the sample size of the data.}
+\item{index}{Integer, controlling which ordered samples will be used in the
+statistics, see details.}
 
 \item{indexL}{Integer, controlling which ordered samples will be used in the
 statistics, see details.}

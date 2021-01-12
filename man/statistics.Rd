@@ -6,14 +6,18 @@
 \usage{
 GKSStat(
   x,
+  index = NULL,
   indexL = NULL,
   indexU = NULL,
-  statName = c("KS", "KS+", "KS-", "BJ", "BJ+", "BJ-", "HC", "HC+", "HC-"),
+  statName = c("KS", "KS+", "KS-", "BJ", "BJ+", "BJ-", "HC", "HC+", "HC-", "Simes"),
   pvalue = TRUE
 )
 }
 \arguments{
 \item{x}{Numeric, the samples that the test statistics will be based on.}
+
+\item{index}{Integer, controlling which ordered samples will be used in the
+statistics, see details.}
 
 \item{indexL}{Integer, controlling which ordered samples will be used in the
 statistics, see details.}
@@ -29,9 +33,6 @@ The default is \code{TRUE}}
 
 \item{alpha0}{Numeric, controlling which ordered samples will be used in the
 statistics, the default value is \code{1}. see details.}
-
-\item{index}{Integer, controlling which ordered samples will be used in the
-statistics, see details.}
 }
 \value{
 a \code{GKSStat} S3 object

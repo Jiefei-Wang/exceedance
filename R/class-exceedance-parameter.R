@@ -1,8 +1,16 @@
 .exceedance_parameter <- function(...){
-    structure(list(...), class = "exceedance_parameter")
+    x <- structure(list(...), class = "exceedance_parameter")
+    .valid_exceedance_object(x)
+    x
 }
 .exceedance_profile <- function(...){
     structure(list(...), class = "exceedance_profile")
+}
+
+.valid_exceedance_object <- function(x){
+    stopifnot(is.character(x$profile_func))
+    stopifnot(is.character(x$confidence_func))
+    stopifnot(is.character(x$inference_func))
 }
 
 title <-function(x){
@@ -15,7 +23,9 @@ title <-function(x){
 }
 
 truncated_print <- function(x, len = 5L){
-    
+    if(length(x)==0){
+        return("NULL")
+    }
     x_len <- length(x)
     x_print_len <- min(x_len, len)
     x_diff <- x_len - x_print_len
@@ -65,7 +75,7 @@ print.exceedance_parameter<-function(x,...){
 show_params_fast_GW <- function(x){
     param1 <- x$param1
     param2 <- x$param2
-    statistc <- x$statistc
+    statistic <- x$statistic
     range_type <- x$range_type
     method <- x$method
     
@@ -76,7 +86,7 @@ show_params_fast_GW <- function(x){
         param2 <- "NULL"
     
     cat("Method:", show_method_name(method),"\n")
-    cat("Statistic:", statistc,"\n")
+    cat("Statistic:", statistic,"\n")
     cat("param1:", truncated_print(param1), "\n")
     cat("param2:", truncated_print(param2), "\n")
     cat("range type:",range_type,"\n")

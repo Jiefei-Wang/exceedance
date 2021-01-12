@@ -6,10 +6,15 @@ NULL
 pkg_data <- new.env()
 pkg_data$criticals <- NULL
 pkg_data$use_cache <- TRUE
+pkg_data$verbose <- FALSE
 
 load_criticals <- function(){
     if(is.null(pkg_data$criticals)){
-        pkg_data$criticals <- package_cached_critical
+        if(exists("package_cached_critical")){
+            pkg_data$criticals <- package_cached_critical
+        }else{
+            pkg_data$criticals <- new.env()
+        }
     }
 }
 

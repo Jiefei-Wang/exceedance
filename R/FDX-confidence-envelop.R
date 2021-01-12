@@ -47,7 +47,10 @@ exceedance_confidence<-function(profiled_data, alpha,ri=NULL,sri = NULL,rx=NULL)
     x_rank <- profiled_data$profile$x_rank
     sorted_i <- as.integer(get_ordered_index(x_rank,ri,sri,rx))
     
-    result <- profiled_data$param$confidence_func(
+    
+    confidence_func <- get(profiled_data$param$confidence_func)
+    
+    result <- confidence_func(
         profiled_data = profiled_data, alpha = alpha, 
         sorted_i = sorted_i)
     result

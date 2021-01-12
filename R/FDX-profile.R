@@ -25,7 +25,9 @@ exceedance_profile<-function(x, param){
         x_rank = x_rank
     )
     
-    profile <- param$profile_func(
+    profile_func <- get(param$profile_func)
+    
+    profile <- profile_func(
         x=x,
         param = param,
         profile= basic_info

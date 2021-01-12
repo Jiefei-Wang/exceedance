@@ -47,7 +47,8 @@
 #' @return Indices of the hypotheses that are rejected in the procedure.
 #' @export
 exceedance_inference<-function(profiled_data, alpha, bound){
-    result <- profiled_data$param$inference_func(
+    inference_func <- get(profiled_data$param$inference_func)
+    result <- inference_func(
         profiled_data = profiled_data, alpha = alpha,
         bound=bound)
     result

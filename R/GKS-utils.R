@@ -23,3 +23,9 @@ getGKSIndex <- function(statName, n, index, indexL, indexU){
     }
     list(indexL = indexL, indexU = indexU, statName = statName)
 }
+
+
+call_func <- function(root, prefix=NULL, postfix=NULL, ...){
+    func_name <- paste0(c(prefix,root,postfix),collapse="")
+    do.call(func_name,args = list(...))
+}

@@ -97,19 +97,17 @@ param_fast_GW<-function(statistic = c("kth_p",
                 param2 <- c(0,param2)
             }
         }else{
-            if(!is.null(param1))
-                param1 <- as.integer(sort(param1))
-            if(!is.null(param2))
-                param2 <- as.integer(sort(param2))
+             param1 <- as.numeric(sort(param1))
+             param2 <- as.numeric(sort(param2))
         }
-        if(is.null(param1)&&is.null(param2)){
+        if(length(param1)==0&&length(param2)==0){
             param1 <- c(0,1)
             param2 <- c(0,1)
             range_type <- "proportion"
         }
-        profile_func <- profile_fast_GW_order_general
-        confidence_func <- confidence_fast_GW_order_general
-        inference_func <- inference_fast_GW_order_general
+        profile_func <- "profile_fast_GW_order_general"
+        confidence_func <- "confidence_fast_GW_order_general"
+        inference_func <- "inference_fast_GW_order_general"
     }
     if(statistic =="kth_p"){
         if(is.null(param1)){
@@ -120,22 +118,22 @@ param_fast_GW<-function(statistic = c("kth_p",
             stopifnot(is.null(param2))
         }
         if(range_type=="index"){
-            profile_func <- profile_fast_GW_kth_p_index
-            confidence_func <- confidence_fast_GW_kth_p_index
-            inference_func <- inference_fast_GW_kth_p_index
+            profile_func <- "profile_fast_GW_kth_p_index"
+            confidence_func <- "confidence_fast_GW_kth_p_index"
+            inference_func <- "inference_fast_GW_kth_p_index"
         }else{
-            profile_func <- profile_fast_GW_kth_p_proportion
-            confidence_func <- confidence_fast_GW_kth_p_proportion
-            inference_func <- inference_general
+            profile_func <- "profile_fast_GW_kth_p_proportion"
+            confidence_func <- "confidence_fast_GW_kth_p_proportion"
+            inference_func <- "inference_general"
         }
     }
     if(statistic =="Simes"){
         param1 <- c(0,1)
         param2 <- c(0,1)
         range_type <- "proportion"
-        profile_func <- profile_fast_GW_order_general
-        confidence_func <- confidence_fast_GW_order_general
-        inference_func <- inference_fast_GW_order_general
+        profile_func <- "profile_fast_GW_order_general"
+        confidence_func <- "confidence_fast_GW_order_general"
+        inference_func <- "inference_fast_GW_order_general"
     }
     param <- .exceedance_parameter(method = "fast_GW",
                   statistic = statistic,
@@ -218,13 +216,13 @@ param_general_GW<-function(
     algorithm = c("general","JW")){
     algorithm <- match.arg(algorithm)
     if(algorithm == "general"){
-        profile_func = profile_general_GW_general
-        confidence_func = confidence_general_GW_general
+        profile_func = "profile_general_GW_general"
+        confidence_func = "confidence_general_GW_general"
     }else{
-        profile_func = profile_general_GW_JW
-        confidence_func = confidence_general_GW_JW
+        profile_func = "profile_general_GW_JW"
+        confidence_func = "confidence_general_GW_JW"
     }
-    inference_func <- inference_general
+    inference_func <- "inference_general"
     
     
     param <- .exceedance_parameter(method = "general_GW",
@@ -250,9 +248,9 @@ param_combine<-function(...,param_list = NULL, alpha_weight = NULL){
                   test_params = test_params,
                   statistic = "combine_GW",
                   alpha_weight=alpha_weight,
-                  profile_func = profile_combine_GW,
-                  confidence_func = confidence_combine_GW,
-                  inference_func = inference_general
+                  profile_func = "profile_combine_GW",
+                  confidence_func = "confidence_combine_GW",
+                  inference_func = "inference_general"
                   )
     param
 }
