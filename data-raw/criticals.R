@@ -9,7 +9,7 @@ package_cache <- exceedance:::pkg_data$criticals
 clusterExport(cl, "evalText")
 
 
-n<-100
+n<-10000
 #####################################
 ## two-sided
 ## BJ, KS, HC
