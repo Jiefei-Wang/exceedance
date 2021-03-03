@@ -29,10 +29,14 @@ compute_critical<-function(package_cache, cl, statName, alpha, n_list, indexLTxt
         env <- environment()
         indexL <- evalText(indexLTxt,env)
         indexU <- evalText(indexUTxt,env)
+        
         key_critical <- 
             exceedance:::compute_key_critical(
                 statName=statName, n=n, alpha=alpha,
                 indexL=indexL,indexU=indexU)
+        if(is.null(key_critical)){
+            return(NULL)
+        }
         result <- list()
         result[[key_critical$key]] <- key_critical$critical
         result

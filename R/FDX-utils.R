@@ -116,6 +116,9 @@ compute_key_critical <- function(statName, n, alpha, indexL, indexU){
     if(length(indexU)!=0&&max(indexU)>n){
         indexU <- indexU[indexU<=n]
     }
+    if(length(indexU)==0&&length(indexL)==0){
+        return(NULL)
+    }
     cache_key <- get_cache_key(statName = statName, n=n, 
                                alpha=alpha, indexL=indexL, indexU=indexU)
     if(use_cache()&&exist_cache_value(cache_key)){
