@@ -18,6 +18,9 @@ load_criticals <- function(){
     }
 }
 
+
+
+
 .onLoad <- function(libname, pkgname){
     load_criticals()
 }
