@@ -20,17 +20,26 @@ evalText<-function(x, env){
 }
 
 
-compute_critical<-function(package_cache, cl, statName, alpha, n_list, indexL, indexU){
-    clusterExport(cl, c("alpha","statName","indexL","indexU"),envir = environment())
-    cur_criticals <- parSapplyLB(cl = cl, n_list, function(n){
+compute_critical<-function(package_cache, cl, statName, alpha, n_list, indexLTxt, indexUTxt){
+    # clusterExport(cl, c("alpha","statName","indexLTxt","indexUTxt"),envir = environment())
+    
+    cur_criticals <- foreach(n = n_list, 
+                             .combine=c, .multicombine = TRUE, .inorder= FALSE,
+                             .export = c("evalText"))%dopar%{
         env <- environment()
-        critical <- 
-            exceedance:::get_critical(
+        indexL <- evalText(indexLTxt,env)
+        indexU <- evalText(indexUTxt,env)
+        key_critical <- 
+            exceedance:::compute_key_critical(
                 statName=statName, n=n, alpha=alpha,
-                indexL=evalText(indexL,env),indexU=evalText(indexU,env))
-    })
-    cache <- clusterEvalQ(cl, exceedance:::pkg_data$criticals)
-    for(e in cache){
-        combineEnv(package_cache,e)
+                indexL=indexL,indexU=indexU)
+        result <- list()
+        result[[key_critical$key]] <- key_critical$critical
+        result
     }
+    # return(cur_criticals)
+    for(i in seq_along(cur_criticals)){
+        package_cache[[names(cur_criticals)[i]]] <- cur_criticals[[i]] 
+    }
+    package_cache
 }

@@ -13,7 +13,7 @@ load_criticals <- function(){
         if(exists("package_cached_critical")){
             pkg_data$criticals <- package_cached_critical
         }else{
-            pkg_data$criticals <- new.env()
+            pkg_data$criticals <- new.env(parent = emptyenv())
         }
     }
 }
