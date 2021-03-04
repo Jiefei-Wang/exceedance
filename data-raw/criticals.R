@@ -5,10 +5,6 @@ library(foreach)
 library(doRedis)
 source("data-raw/functions.R")
 package_cache <- as.list(exceedance:::pkg_data$criticals)
-queue <- "jobs"
-host <- "192.168.2.100"
-registerDoRedis(queue, host = host, progress = TRUE)
-startLocalWorkers(8, queue = queue, host = host)
 
 n<-5000
 #####################################
@@ -42,14 +38,25 @@ for(alpha in alpha_list){
 n_list <- seq_len(2000)
 statName <- "BJ"
 alpha <- 0.1
-k_list <- c(27:52,89:109)
+k_list <- 40:120
 for(k in k_list){
     message(k)
     package_cache <- compute_critical(package_cache,cl,statName, 
-                     alpha, n_list,
-                     indexL=paste0("seq_len(",k,")"), indexU="NULL")
+                                      alpha, n_list,
+                                      indexL=paste0("seq_len(",k,")"), indexU="NULL")
 }
 
+n_list <- seq_len(5000)
+statName <- "BJ"
+alpha <- 0.1
+k_list <- 170:270
+for(k in k_list){
+    message(k)
+    package_cache <- compute_critical(package_cache,cl,statName, 
+                                      alpha, n_list,
+                                      indexL=paste0("seq_len(",k,")"), indexU="NULL")
+    message(k)
+}
 
 
 save_criticals <- function(){

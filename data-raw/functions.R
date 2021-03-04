@@ -40,10 +40,9 @@ compute_critical<-function(package_cache, cl, statName, alpha, n_list, indexLTxt
         result <- list()
         result[[key_critical$key]] <- key_critical$critical
         result
-    }
+                             }
+    message("Finish loop")
     # return(cur_criticals)
-    for(i in seq_along(cur_criticals)){
-        package_cache[[names(cur_criticals)[i]]] <- cur_criticals[[i]] 
-    }
+    package_cache[names(cur_criticals)] <- cur_criticals
     package_cache
 }
