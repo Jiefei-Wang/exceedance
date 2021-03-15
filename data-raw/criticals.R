@@ -1,12 +1,10 @@
 ## code to prepare `criticals` dataset goes here
-## devtools::load_all()
 library(exceedance)
-library(foreach)
-library(doRedis)
+
 source("data-raw/functions.R")
 package_cache <- as.list(exceedance:::pkg_data$criticals)
 
-n<-5000
+n<-10000
 #####################################
 ## two-sided
 ## BJ, KS, HC
@@ -49,7 +47,7 @@ for(k in k_list){
 n_list <- seq_len(5000)
 statName <- "BJ"
 alpha <- 0.1
-k_list <- 170:270
+k_list <- 70:130
 for(k in k_list){
     message(k)
     package_cache <- compute_critical(package_cache,cl,statName, 
@@ -57,6 +55,19 @@ for(k in k_list){
                                       indexL=paste0("seq_len(",k,")"), indexU="NULL")
     message(k)
 }
+
+#####################################
+## paper timing
+#####################################
+n_list <- seq_len(1000)
+statName <- "BJ"
+alpha <- 0.1
+k <- 4
+package_cache <- compute_critical(package_cache,cl,statName, 
+                                  alpha, n_list,
+                                  indexL=paste0("seq_len(",k,")"), indexU="NULL")
+
+
 
 
 save_criticals <- function(){
