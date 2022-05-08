@@ -27,7 +27,7 @@ get_ordered_index<-function(x_rank,ri=NULL,sri = NULL,rx=NULL){
         }
         sorted_i <- x_rank[ri]
     }
-    sorted_i
+    sort(sorted_i)
 }
 ######################################################
 ## GW: general JW algorithm
